@@ -11,9 +11,10 @@ extern bool verbose;
 }while(0)
 
 // TODO Система ошибок и уровней логирования 
-// TODO Вывод информации о системе
 
-Machine::Machine() : core_count_(cpuid_get_total_cpus()), core_(0), valid_(false) {
+Machine::Machine() : core_count_(cpuid_get_total_cpus()), 
+                     core_(0),
+                     valid_(false) {
     if (core_count_ > 0) {
         for (int core_id = 0; core_id < core_count_; ++core_id) {
             core_.emplace_back(Core{core_id});

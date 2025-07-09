@@ -23,8 +23,8 @@ class Machine {
 public:
     Machine();
 
-    bool is_valid() {return valid_;}
-    int get_core_count() {return core_count_;}
+    bool is_valid() const {return valid_;}
+    unsigned get_core_count() const {return core_count_;}
 };
 
 int get_cpu_id_data(cpu_id_t& data);
