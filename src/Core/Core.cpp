@@ -28,7 +28,7 @@ int get_cpu_id_data(cpu_id_t& data) {
         GENERAL_ERROR("[ERROR] Sorry, your CPU doesn't support CPUID");
     }
 
-    cpu_raw_data_t raw;
+    cpu_raw_data_t raw = {};
 
     if (cpuid_get_raw_data(&raw) < 0) {
         GENERAL_ERROR("[ERROR] Sorry, cannot get the CPUID raw data");
@@ -41,7 +41,7 @@ int get_cpu_id_data(cpu_id_t& data) {
 }
 
 void dump_machine_specs() {
-    cpu_id_t data;
+    cpu_id_t data = {};
 
     if (get_cpu_id_data(data)) {
         ERROR_MSG("[ERROR] Sorry, machine data is not reachable");

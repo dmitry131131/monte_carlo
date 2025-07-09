@@ -14,7 +14,6 @@ Algorithm::Algorithm(Machine& machine,
                      Function& func, 
                      unsigned core_usage = 1) : core_usage_(core_usage),
                                           point_count_(DEFAULT_POINT_COUNT),
-                                          result_(std::numeric_limits<double>::quiet_NaN()),
                                           machine_(machine),
                                           function_(func) {
     if (core_usage_ > machine_.get_core_count()) {
@@ -29,7 +28,6 @@ Algorithm::Algorithm(Machine& machine,
                      unsigned core_usage, 
                      unsigned point_count) : core_usage_(core_usage),
                                         point_count_(point_count),
-                                        result_(std::numeric_limits<double>::quiet_NaN()),
                                         machine_(machine),
                                         function_(func) {}
 
@@ -55,10 +53,12 @@ void integrate(const std::function<double(double)>& func, double start,
 }
 }
 
-double Algorithm::launch() {
+Result Algorithm::launch() {
     std::vector<std::thread> thread_vector;
     double result = 0;
     std::mutex mutex;
+
+    Result result_conclusion{machine_, core_usage_, point_count_};
 
     double step = (function_.end_ - function_.start_)/static_cast<double>(core_usage_);
     double current_start = function_.start_;
@@ -74,5 +74,37 @@ double Algorithm::launch() {
         thread.join();
     }
 
-    return result/static_cast<double>(point_count_);
+    result_conclusion.set_result(result/static_cast<double>(point_count_));
+
+    return result_conclusion; 
+}
+
+Result::Result(const Machine& machine, const unsigned& core_usage, const unsigned& point_count) :
+               machine_(machine), core_usage_(core_usage), point_count_(point_count) {
+    start_ = std::chrono::steady_clock::now();
+}
+
+void Result::set_result(double result) {
+    end_ = std::chrono::steady_clock::now();
+    duration_ = end_ - start_;
+    result_ = result;
+}
+
+void Result::dump_result() {
+    MSG(*this);
+}
+
+std::ostream& operator<< (std::ostream& os, const Result& result) {
+    #define OS_MSG(MSG_) do{    \
+        os << MSG_<< std::endl; \
+    }while(0)   
+    
+    OS_MSG("Result: " << result.result_);
+    OS_MSG("Time: " << result.duration_.count() << " sec");
+    OS_MSG("CPU usage: " << result.core_usage_);
+    OS_MSG("CPU available: " << result.machine_.get_core_count());
+    OS_MSG("Point count: " << result.point_count_);
+
+    return os;
+    #undef OS_MSG
 }
