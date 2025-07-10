@@ -17,6 +17,7 @@ struct Function {
     double end_;
 
     Function(const std::function<double(double)>& func, double start, double end);
+    // TODO function dump
 };
 
 class Result {
@@ -26,9 +27,9 @@ private:
     std::chrono::time_point<std::chrono::steady_clock> end_;
     std::chrono::duration<double> duration_;
 
-    const Machine& machine_;
-    const unsigned& core_usage_;
-    const unsigned& point_count_;
+    const Machine machine_;
+    const unsigned core_usage_;
+    const unsigned point_count_;
 public:
     // Start object lifetime end start timer
     Result(const Machine& machine, const unsigned& core_usage, const unsigned& point_count);
@@ -48,7 +49,7 @@ private:
     // TODO Время старта и время окончания работы алгоритма
     unsigned core_usage_;
     unsigned point_count_; 
-    const Machine& machine_;
+    const Machine machine_;
     Function function_;
 
 public:

@@ -27,11 +27,13 @@ int main(int argc, char** argv) {
 
     int core_usage = DEFAULT_CORE_USAGE;
     long point_count = DEFAULT_POINT_COUNT;
+    std::pair<double, double> integration_limits{0, 0};
 
     app.add_flag("-v,--verbose", verbose, "Enable verbose mode");
     app.add_flag_callback("--get-machine-specs", dump_machine_specs, "Dump all machine specs");
     app.add_option("-c,--core-count", core_usage, "Set count of usable cores default value 1")->required();
     app.add_option("-p,--point-count", point_count, "Set count amount of integration points")->required();
+    app.add_option("-l,--integration-limits", integration_limits, "Set integration limits")->required();
 
     CLI11_PARSE(app, argc, argv);
 
@@ -49,7 +51,11 @@ int main(int argc, char** argv) {
         }
     }
 
-    Function func{[] (double x) {return x;}, 0, 1};
+    if (integration_limits.first >= integration_limits.second) {
+        GENERAL_ERROR("[ERROR] first integration limit must be less then second limit");
+    }
+
+    Function func{[] (double x) {return x;}, integration_limits.first, integration_limits.second};
     Algorithm algorithm{machine, func, static_cast<unsigned>(core_usage), static_cast<unsigned>(point_count)};
 
     MSG(algorithm.launch());
