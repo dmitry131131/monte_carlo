@@ -6,10 +6,6 @@
 
 #include <Core/Core.hpp>
 
-constexpr unsigned DEFAULT_POINT_COUNT = 1e5;
-constexpr unsigned DEFAULT_CORE_USAGE = 1;
-constexpr unsigned RANDOM_SEED = 1234;
-
 // Struct represents function in monte-carlo algorithm
 struct Function {
     const std::function<double(double)> func_;
@@ -27,7 +23,7 @@ private:
     std::chrono::time_point<std::chrono::steady_clock> end_;
     std::chrono::duration<double> duration_;
 
-    const Machine machine_;
+    const Machine& machine_;
     const unsigned core_usage_;
     const unsigned point_count_;
 public:
@@ -46,17 +42,16 @@ public:
 class Algorithm
 {
 private:
-    // TODO Время старта и время окончания работы алгоритма
     unsigned core_usage_;
     unsigned point_count_; 
-    const Machine machine_;
+    Machine& machine_;
     Function function_;
 
 public:
     Algorithm(Machine& machine, Function& func, unsigned core_usage);
     Algorithm(Machine& machine, Function& func, unsigned core_usage, unsigned point_count_);
 
-    const Machine& get_machine() const {return machine_;}
+    Machine& get_machine() const {return machine_;}
 
     Result launch();
 };

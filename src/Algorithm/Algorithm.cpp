@@ -6,9 +6,14 @@
 #include <memory>
 
 #include "Core/Error.hpp"
+#include "Config/Config.hpp"
 #include "Algorithm/Algorithm.hpp"
 
-extern bool verbose;
+constexpr unsigned RANDOM_SEED = 1234;
+
+namespace opts{
+    extern bool verbose;
+}
 
 Algorithm::Algorithm(Machine& machine, 
                      Function& func, 
@@ -18,7 +23,7 @@ Algorithm::Algorithm(Machine& machine,
                                           function_(func) {
     if (core_usage_ > machine_.get_core_count()) {
         core_usage_ = machine_.get_core_count();
-        if (verbose) {
+        if (opts::verbose) {
             MSG("[WARNING] Core count more then physical CPUS. Only " << core_usage_ << " cores will be used!");
         }
     }
