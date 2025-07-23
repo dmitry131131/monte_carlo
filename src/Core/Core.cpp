@@ -3,7 +3,9 @@
 #include "Core/Core.hpp"
 #include "Core/Error.hpp"
 
+namespace opts {
 extern bool verbose;
+} // opts
 
 #define GENERAL_ERROR(MSG_) do {    \
     ERROR_MSG(MSG_);                \
@@ -13,16 +15,13 @@ extern bool verbose;
 // TODO Система ошибок и уровней логирования 
 
 Machine::Machine() : core_count_(cpuid_get_total_cpus()), 
-                     core_(0),
                      valid_(false) {
     if (core_count_ > 0) {
-        for (int core_id = 0; core_id < core_count_; ++core_id) {
-            core_.emplace_back(Core{core_id});
-        }
         valid_ = true;
     }
 }
-
+namespace {
+// Function get cpuid data from the system
 int get_cpu_id_data(cpu_id_t& data) {
     if (!cpuid_present()) {
         GENERAL_ERROR("[ERROR] Sorry, your CPU doesn't support CPUID");
@@ -39,6 +38,7 @@ int get_cpu_id_data(cpu_id_t& data) {
 
     return 0;
 }
+} // namespace
 
 void dump_machine_specs() {
     cpu_id_t data = {};
