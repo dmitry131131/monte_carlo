@@ -19,33 +19,29 @@ namespace opts {
 AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), argv_(argv) {
     app_.add_flag("-v,--verbose", opts::verbose, "Enable verbose mode");
     app_.add_flag_callback("--get-machine-specs", dump_machine_specs, "Dump all machine specs");
-    app_.add_option("-c,--core-count", core_usage_, "Set count of usable cores default value 1")->required();
-    app_.add_option("-p,--point-count", point_count_, "Set count amount of integration points")->required();
-    app_.add_option("-l,--integration-limits", integration_limits_, "Set integration limits")->required();
+    app_.add_option("-c,--core-count", settings_.core_usage_, "Set count of usable cores default value 1")->required();
+    app_.add_option("-p,--point-count", settings_.point_count_, "Set count amount of integration points")->required();
+    app_.add_option("-s,--start-limits", function_.start_, "Set start integration limits")->required();
+    app_.add_option("-e,--end-limits", function_.end_, "Set end integration limits")->required();
 }
 
 int AppConfig::parse_command_line() {
     CLI11_PARSE(app_, argc_, argv_);
 
-    if (core_usage_ < 0) {
-        core_usage_ = DEFAULT_CORE_USAGE;
-        VERBOSE_MSG(std::cout, "[WARNING] Core count must be more than 0, so set to " << core_usage_ << "default value\n");
+    if (settings_.point_count_ < settings_.core_usage_) {
+        settings_.point_count_ = DEFAULT_POINT_COUNT;
+        ERROR_MSG("[WARNING] Point count must be more then core usage, so set to " << settings_.point_count_ << " - default value\n");
     }
 
-    if (point_count_ < core_usage_) {
-        point_count_ = DEFAULT_POINT_COUNT;
-        VERBOSE_MSG(std::cout, "[WARNING] Point count must be more then core usage, so set to " << point_count_ << " - default value\n");
-    }
-
-    if (integration_limits_.first >= integration_limits_.second) {
+    if (function_.start_ >= function_.end_) {
         GENERAL_ERROR("[ERROR] first integration limit must be less then second limit");
     }
+
+    VERBOSE_MSG(std::cout, "Function: \n" << function_ << "\nAlgorithm settings: \n" << settings_);
 
     return 0;
 }
 
-Algorithm AppConfig::configure(Machine& machine) {
-    Function func{[] (double x) {return x;}, integration_limits_.first, integration_limits_.second};
-
-    return Algorithm{machine, func, static_cast<unsigned>(core_usage_), static_cast<unsigned>(point_count_)};
+Algorithm AppConfig::configure(const Machine& machine) {
+    return Algorithm{machine, function_, settings_};
 }
