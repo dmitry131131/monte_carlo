@@ -5,6 +5,7 @@
 #include "Core/Core.hpp"
 #include "Core/AppConfig.hpp"
 #include "Algorithm/Algorithm.hpp"
+#include "Dumper/Dumper.hpp"
 
 #define GENERAL_ERROR(MSG_) do {    \
     ERROR_MSG(MSG_);                \
@@ -29,7 +30,7 @@ int main(int argc, char** argv) {
     Algorithm algorithm = app.configure(machine);
 
     // Launch algorithm and dumps result
-    MSG(algorithm.launch());
+    OstreamDumper(std::cout).dump(algorithm.launch());
 
     return 0;
 }

@@ -75,25 +75,24 @@ void Algorithm::Result::set_result(double result) {
     end_ = std::chrono::steady_clock::now();
     duration_ = end_ - start_;
     result_ = result;
+
+    isValid_ = true;
 }
 
-void Algorithm::Result::dump_result() {
-    MSG(*this);
+std::optional<double> Algorithm::Result::get_result() const {
+    if (isValid_) {
+        return result_;
+    }
+
+    return std::nullopt;
 }
 
-std::ostream& operator<< (std::ostream& os, const Algorithm::Result& result) {
-    #define OS_MSG(MSG_) do{    \
-        os << MSG_<< std::endl; \
-    }while(0)   
-    
-    OS_MSG("Result: " << result.result_);
-    OS_MSG("Time: " << result.duration_.count() << " sec");
-    OS_MSG("CPU usage: " << result.settings_.core_usage_);
-    OS_MSG("CPU available: " << result.machine_.get_core_count());
-    OS_MSG("Point count: " << result.settings_.point_count_);
+std::optional<std::chrono::duration<double>> Algorithm::Result::get_duration() const {
+    if (isValid_) {
+        return duration_;
+    }
 
-    return os;
-    #undef OS_MSG
+    return std::nullopt;
 }
 
 std::ostream& operator<< (std::ostream& os, const Function& func) {
