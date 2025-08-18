@@ -2,6 +2,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include "Algorithm/Algorithm.hpp"
 
 /// Base dumper class that declare common dumper structure 
@@ -16,10 +17,16 @@ class OstreamDumper : public Dumper {
 private:
     std::ostream &OS_;
 public: 
-    OstreamDumper(std::ostream &OS) : OS_(OS) {}
+    explicit OstreamDumper(std::ostream &OS) : OS_(OS) {}
     virtual ~OstreamDumper() = default;
 
     void dump(const Algorithm::Result &Result) override;
 };
 
-// TODO create HTML or MarkDown dumper
+class MDDumper final : public Dumper {
+private:
+    std::ofstream OS_;
+public:
+    explicit MDDumper(const std::string &str) : OS_(str) {}
+    void dump(const Algorithm::Result &Result) override;
+};

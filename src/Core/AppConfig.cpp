@@ -16,6 +16,7 @@ namespace opts {
     return -1;                      \
 }while(0)
 
+// TODO Add options validation
 AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), argv_(argv) {
     app_.add_flag("-v,--verbose", opts::verbose, "Enable verbose mode");
     app_.add_flag_callback("--get-machine-specs", dump_machine_specs, "Dump all machine specs");
@@ -23,6 +24,10 @@ AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), arg
     app_.add_option("-p,--point-count", settings_.point_count_, "Set count amount of integration points")->required();
     app_.add_option("-s,--start-limits", function_.start_, "Set start integration limits")->required();
     app_.add_option("-e,--end-limits", function_.end_, "Set end integration limits")->required();
+
+    // dumperType_ has implicitly conversion from std::string
+    app_.add_option("--output-format", dumperType_, "Set output format");
+    app_.add_option("-o,--output", outputFilename_, "Set output filename");
 }
 
 int AppConfig::parse_command_line() {
@@ -44,4 +49,28 @@ int AppConfig::parse_command_line() {
 
 Algorithm AppConfig::configure(const Machine& machine) {
     return Algorithm{machine, function_, settings_};
+}
+
+std::unique_ptr<Dumper> AppConfig::dumper_configure() {
+    switch (dumperType_.value_)
+    {
+    case DumpType::DumpTypeVal::DEFAULT_CONSOLE:
+        return std::make_unique<OstreamDumper>(std::cout);
+    
+    case DumpType::DumpTypeVal::COLOR_CONSOLE:
+        // TODO change to color console dumper
+        return std::make_unique<OstreamDumper>(std::cout);
+
+    case DumpType::DumpTypeVal::MARKDOWN:
+        if (!outputFilename_.has_value()) {
+            // TODO exception 
+            ERROR_MSG("[ERROR] No output file. Output mode set to default console");
+            return std::make_unique<OstreamDumper>(std::cout); 
+        }
+        return std::make_unique<MDDumper>(*outputFilename_);
+
+    default:
+        // TODO create exception in this case
+        return std::make_unique<OstreamDumper>(std::cout);
+    }
 }

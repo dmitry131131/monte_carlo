@@ -14,7 +14,6 @@
 
 // TODO написать продвинутую обработку исключений
 // TODO добавить возможность указания интегрируемой функции 1 переменной
-// TODO добавить классы дамперов результата
 // TODO добавить слежение за состоянием машины в процессе работы алгоритма(отдельный процесс или поток)
 
 int main(int argc, char** argv) {
@@ -28,9 +27,10 @@ int main(int argc, char** argv) {
     app.parse_command_line();
 
     Algorithm algorithm = app.configure(machine);
+    std::unique_ptr<Dumper> Dumper = app.dumper_configure();
 
     // Launch algorithm and dumps result
-    OstreamDumper(std::cout).dump(algorithm.launch());
+    Dumper->dump(algorithm.launch());
 
     return 0;
 }
