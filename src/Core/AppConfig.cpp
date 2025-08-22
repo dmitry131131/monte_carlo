@@ -58,8 +58,7 @@ std::unique_ptr<Dumper> AppConfig::dumper_configure() {
         return std::make_unique<OstreamDumper>(std::cout);
     
     case DumpType::DumpTypeVal::COLOR_CONSOLE:
-        // TODO change to color console dumper
-        return std::make_unique<OstreamDumper>(std::cout);
+        return std::make_unique<ColorDumper>(std::cout);
 
     case DumpType::DumpTypeVal::MARKDOWN:
         if (!outputFilename_.has_value()) {
