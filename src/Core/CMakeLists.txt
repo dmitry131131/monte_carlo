@@ -1,3 +1,5 @@
-target_sources(${TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Core.cpp
-                                 ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-                                 ${CMAKE_CURRENT_SOURCE_DIR}/AppConfig.cpp)
+set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Core.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/AppConfig.cpp)
+
+target_sources(${TARGET} PRIVATE ${SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+target_sources(${TEST_TARGET} PRIVATE ${SOURCES})

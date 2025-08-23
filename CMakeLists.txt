@@ -35,11 +35,10 @@ target_link_libraries(${TARGET} PRIVATE CLI11::CLI11)
 target_link_libraries(${TARGET} PRIVATE cpuid)
 
 target_link_libraries(${TEST_TARGET} PRIVATE GTest::GTest GTest::Main)
-target_link_libraries(${TEST_TARGET} PRIVATE cpuid)
+target_link_libraries(${TEST_TARGET} PRIVATE cpuid CLI11::CLI11)
 
 # Include directory
 target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
 target_include_directories(${TEST_TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Compile options
