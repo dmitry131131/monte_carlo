@@ -13,7 +13,7 @@
 ## Конфигурация Debug сборки
 
 ```bash
-    cmake -G "Unix Makefiles" -S . -B build/Debug -DCMAKE_BUILD_TYPE=Debug
+    cmake -G "Unix Makefiles" -S . -B build/Debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
 ```
 
 ## Сборка с нуля

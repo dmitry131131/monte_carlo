@@ -8,7 +8,7 @@
 #include <Core/Core.hpp>
 
 /// Struct represents function in monte-carlo algorithm
-struct Function {
+struct Function final {
     const std::function<double(double)> func_;  /// Fuction f(x)
     double start_;                              /// Start integration limit
     double end_;                                /// End integration limit
@@ -19,7 +19,7 @@ struct Function {
     friend std::ostream& operator<< (std::ostream& os, const Function& func);
 };
 
-class Algorithm {
+class Algorithm final {
 public:
     /// Struct represents algorithm settings
     struct Settings {
