@@ -15,6 +15,7 @@
 // TODO написать продвинутую обработку исключений
 // TODO добавить возможность указания интегрируемой функции 1 переменной
 // TODO добавить слежение за состоянием машины в процессе работы алгоритма(отдельный процесс или поток)
+// TODO Add configuration from toml or yaml
 
 int main(int argc, char** argv) {
     // Create machine, scan system and count available cpu count
@@ -22,6 +23,7 @@ int main(int argc, char** argv) {
     if (!machine.is_valid()) {
         GENERAL_ERROR("[ERROR] Unable to identify machine resources, to launch integration. Zero CPU available.");
     }
+
     // Config app: scan command line, configure algorithm
     AppConfig app(argc, argv);
     app.parse_command_line();
@@ -29,8 +31,14 @@ int main(int argc, char** argv) {
     Algorithm algorithm = app.configure(machine);
     std::unique_ptr<Dumper> Dumper = app.dumper_configure();
 
+    machine.get_monitor().start_monitoring();
+
+    Algorithm::Result res = algorithm.launch();
+
+    machine.get_monitor().stop_monitoring();
+
     // Launch algorithm and dumps result
-    Dumper->dump(algorithm.launch());
+    Dumper->dump(res);
 
     return 0;
 }

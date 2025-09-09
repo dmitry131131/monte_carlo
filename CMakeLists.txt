@@ -50,7 +50,7 @@ target_compile_options(${TARGET} PUBLIC
 )
 
 # Link options
-target_link_options(${TARGET} PRIVATE -lpthread
+target_link_options(${TARGET} PRIVATE -lpthread -lstdc++fs
     $<$<CONFIG:DEBUG>: -fsanitize=address>
 )
 

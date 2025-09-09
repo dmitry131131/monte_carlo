@@ -22,6 +22,16 @@ void OstreamDumper::dump(const Algorithm::Result &Result) {
     OS_MSG("\nFunction info:");
     OS_MSG(Result.get_function());
 
+    std::cout << "Temperature info:\n\n";
+
+    for (const auto& zone : Result.get_machine().get_monitor().get_thermal_zones()) {
+
+        std::cout << zone.path_ << '\n' << zone.type_ << '\n';
+        for (const auto& temp : zone.temperature_) {
+            std::cout << std::chrono::duration<double>(temp.first - zone.start_) << " : " << temp.second << '\n';
+        }
+    }
+
     #undef OS_MSG
 }
 

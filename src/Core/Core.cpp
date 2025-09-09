@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "Core/Core.hpp"
 #include "Core/Error.hpp"
 
@@ -14,7 +12,7 @@ extern bool verbose;
 
 // TODO Система ошибок и уровней логирования 
 
-Machine::Machine() : core_count_(cpuid_get_total_cpus()), 
+Machine::Machine() : core_count_(cpuid_get_total_cpus()),
                      valid_(false) {
     if (core_count_ > 0) {
         valid_ = true;
