@@ -20,7 +20,7 @@ class AppConfig final {
     Function function_{[](double x){return x;}, 0, 0};
 
     // Dumper settings
-    class DumpType {
+    class DumpType final {
     public:
         enum class DumpTypeVal : unsigned char {
             DEFAULT_CONSOLE,

@@ -3,15 +3,13 @@
 #include "libcpuid.h"
 #include "Monitor/Monitor.hpp"
 
-// TODO cut temperature monitor to separated class 
-
 /// This class implements machine information data and system monitor
 /// This class collecting information about CPU temperature during algorithm
 class Machine final {
     int core_count_;    /// count of available logical cpus
     bool valid_;        /// valid status of machine
 
-    Monitor monitor_;
+    Monitor monitor_;   /// System monitor
 public:
     Machine();
     // Getters
