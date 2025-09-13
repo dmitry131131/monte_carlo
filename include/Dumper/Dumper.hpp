@@ -1,11 +1,16 @@
-// This file implements dumper class for Algorithm::Result
+/*!
+    \file
+    \brief This file implements dumper class for Algorithm::Result
+*/
 #pragma once
 
 #include <iostream>
 #include <fstream>
 #include "Algorithm/Algorithm.hpp"
 
-/// Base dumper class that declare common dumper structure 
+/*!
+	\brief Base dumper class that declare common dumper structure 
+*/
 class Dumper {
 public:
     /// Dumper function
@@ -13,7 +18,9 @@ public:
     virtual ~Dumper() = default;
 };
 
-/// OstreamDumper dumps result into ostream
+/*!
+	\brief OstreamDumper dumps result into ostream
+*/
 class OstreamDumper : public Dumper {
 protected:
     /// Output stream to dump 
@@ -25,7 +32,9 @@ public:
     void dump(const Algorithm::Result &Result) override;
 };
 
-/// ColorDumper dumps result into ostream in colored format (Escape codes)
+/*!
+	\brief ColorDumper dumps result into ostream in colored format (Escape codes)
+*/
 class ColorDumper final : public OstreamDumper {
 private:
     /// Style codes for creating escape codes  
@@ -68,7 +77,9 @@ public:
     void dump(const Algorithm::Result &Result) override;
 };
 
-/// MDDumper dumps result into markdown 
+/*!
+	\brief MDDumper dumps result into markdown 
+*/
 class MDDumper final : public Dumper {
 private:
     /// File stream to dump MarkDown dump there

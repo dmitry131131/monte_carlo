@@ -1,4 +1,7 @@
-// This file define error control macro
+/*!
+    \file
+    \brief This file define error control macro
+*/
 #pragma once
 
 #include <iostream>
