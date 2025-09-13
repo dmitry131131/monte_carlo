@@ -1,4 +1,7 @@
-// File declare class encapsulate App class and collect all configuration info from command line
+/*!
+    \file
+    \brief File declare class encapsulate App class and collect all configuration info from command line
+*/
 #pragma once
 #include "CLI/CLI.hpp"
 
@@ -7,6 +10,9 @@
 #include "Algorithm/Algorithm.hpp"
 #include "Dumper/Dumper.hpp"
 
+/*!
+	\brief Class-wrapper for CLI11 app with configuration functions
+*/
 class AppConfig final {
     using limits_t = std::pair<double, double>;
     // Common App fields
@@ -19,8 +25,8 @@ class AppConfig final {
     // Function settings
     Function function_{[](double x){return x;}, 0, 0};
 
-    // Dumper settings
-    class DumpType {
+    /// Dumper settings
+    class DumpType final {
     public:
         enum class DumpTypeVal : unsigned char {
             DEFAULT_CONSOLE,
@@ -40,15 +46,22 @@ class AppConfig final {
                 value_ = DumpTypeMap.find(str)->second;
             }
         }
-    } dumperType_;
+    } dumperType_; ///< Type of dumper
 
-    std::optional<std::string> outputFilename_ = std::nullopt;
+    std::optional<std::string> outputFilename_ = std::nullopt;  ///< Output filename 
 
 public:
     AppConfig(const int argc, const char* const * argv);
-
+    /// @brief function parse command line and fill config info 
+    /// @return return 0 by success and -1 by fail
     int parse_command_line();
-
+    
+    /// @brief configure Algorithm using command line info 
+    /// @param[in] machine Machine reference 
+    /// @return Algorithm class ready for launch
     Algorithm configure(const Machine& machine);
+
+    /// @brief configure Dumper using command line info
+    /// @return unique_ptr on Dumper class
     std::unique_ptr<Dumper> dumper_configure();
 };

@@ -1,20 +1,29 @@
-// This file implements dumper class for Algorithm::Result
+/*!
+    \file
+    \brief This file implements dumper class for Algorithm::Result
+*/
 #pragma once
 
 #include <iostream>
 #include <fstream>
 #include "Algorithm/Algorithm.hpp"
 
-/// Base dumper class that declare common dumper structure 
+/*!
+	\brief Base dumper class that declare common dumper structure 
+*/
 class Dumper {
 public:
+    /// Dumper function
     virtual void dump(const Algorithm::Result &Result) = 0;
     virtual ~Dumper() = default;
 };
 
-/// OstreamDumper dumps result into ostream
+/*!
+	\brief OstreamDumper dumps result into ostream
+*/
 class OstreamDumper : public Dumper {
 protected:
+    /// Output stream to dump 
     std::ostream &OS_;
 public: 
     explicit OstreamDumper(std::ostream &OS) : OS_(OS) {}
@@ -23,9 +32,12 @@ public:
     void dump(const Algorithm::Result &Result) override;
 };
 
-/// ColorDumper dumps result into ostream in colored format (Escape codes)
+/*!
+	\brief ColorDumper dumps result into ostream in colored format (Escape codes)
+*/
 class ColorDumper final : public OstreamDumper {
 private:
+    /// Style codes for creating escape codes  
     enum class StyleCode : char {
         RESET      = 0,
         // Text styles
@@ -50,7 +62,7 @@ private:
         BG_CYAN    = 46,
         BG_WHITE   = 47
     };
-    // Generate escape code from enum
+    /// Generate escape code from enum
     std::string get_escape_code(StyleCode code) {return "\033[" + std::to_string(static_cast<char>(code)) + "m";}
     void set_style(StyleCode code) {OS_ << get_escape_code(code);}
     void set_style(const std::initializer_list<StyleCode> &list) {
@@ -65,9 +77,12 @@ public:
     void dump(const Algorithm::Result &Result) override;
 };
 
-/// MDDumper dumps result into markdown 
+/*!
+	\brief MDDumper dumps result into markdown 
+*/
 class MDDumper final : public Dumper {
 private:
+    /// File stream to dump MarkDown dump there
     std::ofstream OS_;
 public:
     explicit MDDumper(const std::string &str) : OS_(str) {}

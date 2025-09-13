@@ -24,3 +24,6 @@
 ```bash
     cmake --build build/Release/ -j20 --verbose --clean-first
 ```
+
+## Генерация документации
+

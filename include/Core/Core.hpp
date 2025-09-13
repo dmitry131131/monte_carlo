@@ -1,25 +1,34 @@
-// This code implement core classes and methods of Monte-Carlo integration method
+/*!
+    \file
+    \brief This code implement core classes and methods of Monte-Carlo integration method
+*/
 #pragma once
 #include "libcpuid.h"
 #include "Monitor/Monitor.hpp"
 
-// TODO cut temperature monitor to separated class 
-
-/// This class implements machine information data and system monitor
-/// This class collecting information about CPU temperature during algorithm
+/*!
+	\brief This class implements machine information data and system monitor
+    This class collecting information about CPU temperature during algorithm
+*/
 class Machine final {
-    int core_count_;    /// count of available logical cpus
-    bool valid_;        /// valid status of machine
+    int core_count_;    ///< count of available logical cpus
+    bool valid_;        ///< valid status of machine
 
-    Monitor monitor_;
+    Monitor monitor_;   ///< System monitor
 public:
     Machine();
-    // Getters
+    /// Is machine valid
     bool is_valid() const {return valid_;}
+    /// @brief get real logical count
+    /// @return core count
     unsigned get_core_count() const {return core_count_;}
+    /// @brief get Monitor 
+    /// @return Monitor reference
     Monitor& get_monitor() {return monitor_;}
+    /// @brief get const Monitor 
+    /// @return const Monitor reference
     const Monitor& get_monitor() const {return monitor_;}
 };
 
-// Function dumps cpuid data in pretty view
+/// @brief Function dumps cpuid data in pretty view
 void dump_machine_specs();
