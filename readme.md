@@ -24,3 +24,24 @@
 ```bash
     cmake --build build/Release/ -j20 --verbose --clean-first
 ```
+
+## Генерация документации
+
+```bash
+    cd ./docs && doxygen && cd ../
+```
+
+Документация будет находится в `docs`. В директории `html` будет html версия, а в `latex` - версия в latex
+
+### Генерация pdf
+
+Чтобы сгенерировать `pdf` необходимо установить пакеты
+
++ texlive-latex-base texlive-latex-extra texlive-fonts-recommended
++ texlive-meta
+
+Далее выполнить команду
+
+```bash
+    cd ./docs/latex && make
+```
