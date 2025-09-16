@@ -12,10 +12,9 @@ extern bool verbose;
 
 // TODO Система ошибок и уровней логирования 
 
-Machine::Machine() : core_count_(cpuid_get_total_cpus()),
-                     valid_(false) {
-    if (core_count_ > 0) {
-        valid_ = true;
+Machine::Machine() : core_count_(cpuid_get_total_cpus()) {
+    if (core_count_ <= 0) {
+        throw machine_error("CpuId didn't get valid cpu count");
     }
 }
 namespace {
@@ -38,7 +37,7 @@ int get_cpu_id_data(cpu_id_t& data) {
 }
 } // namespace
 
-void dump_machine_specs() {
+void dump_machine_specs() noexcept {
     cpu_id_t data = {};
 
     if (get_cpu_id_data(data)) {
