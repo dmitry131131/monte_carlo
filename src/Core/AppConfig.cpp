@@ -20,14 +20,15 @@ namespace opts {
 AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), argv_(argv) {
     app_.add_flag("-v,--verbose", opts::verbose, "Enable verbose mode");
     app_.add_flag_callback("--get-machine-specs", dump_machine_specs, "Dump all machine specs");
-    app_.add_option("-c,--core-count", settings_.core_usage_, "Set count of usable cores default value 1")->required();
-    app_.add_option("-p,--point-count", settings_.point_count_, "Set count amount of integration points")->required();
-    app_.add_option("-s,--start-limits", function_.start_, "Set start integration limits")->required();
-    app_.add_option("-e,--end-limits", function_.end_, "Set end integration limits")->required();
+    app_.add_option("-c,--core-count", settings_.core_usage_, "Set count of usable cores default value 1")->default_val(DEFAULT_CORE_USAGE);
+    app_.add_option("-p,--point-count", settings_.point_count_, "Set count amount of integration points")->default_val(DEFAULT_POINT_COUNT);
+    app_.add_option("-s,--start-limits", function_.start_, "Set start integration limits")->default_val(0);
+    app_.add_option("-e,--end-limits", function_.end_, "Set end integration limits")->default_val(1);
 
     // dumperType_ has implicitly conversion from std::string
-    app_.add_option("--output-format", dumperType_, "Set output format");
-    app_.add_option("-o,--output", outputFilename_, "Set output filename");
+    // TODO check valid dumper name maybe with transformer (-> transform function)
+    app_.add_option("--output-format", dumperType_, "Set output format")->default_val("default-console");
+    app_.add_option("-o,--output", outputFilename_, "Set output filename")->check(CLI::ExistingFile);
 }
 
 int AppConfig::parse_command_line() {
@@ -51,6 +52,7 @@ Algorithm AppConfig::configure(const Machine& machine) {
     return Algorithm{machine, function_, settings_};
 }
 
+// TODO Add try - catch blocks into Dangerous dumpers and create default dumper if exception
 std::unique_ptr<Dumper> AppConfig::dumper_configure() {
     switch (dumperType_.value_)
     {

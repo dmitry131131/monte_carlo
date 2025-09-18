@@ -10,8 +10,6 @@ extern bool verbose;
     return -1;                      \
 }while(0)
 
-// TODO Система ошибок и уровней логирования 
-
 Machine::Machine() : core_count_(cpuid_get_total_cpus()) {
     if (core_count_ <= 0) {
         throw machine_error("CpuId didn't get valid cpu count");

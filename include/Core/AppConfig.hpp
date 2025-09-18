@@ -6,7 +6,6 @@
 #include "CLI/CLI.hpp"
 
 #include "Core/Core.hpp"
-#include "Config/Config.hpp"
 #include "Algorithm/Algorithm.hpp"
 #include "Dumper/Dumper.hpp"
 
@@ -15,6 +14,8 @@
 */
 class AppConfig final {
     using limits_t = std::pair<double, double>;
+    static constexpr unsigned DEFAULT_POINT_COUNT = 1e8;
+    static constexpr unsigned DEFAULT_CORE_USAGE = 2;
     // Common App fields
     CLI::App app_ = CLI::App("Monte-Carlo integration method benchmark");
     const int argc_;

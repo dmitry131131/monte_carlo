@@ -23,7 +23,9 @@ int main(int argc, char** argv) {
 
         // Config app: scan command line, configure algorithm
         AppConfig app(argc, argv);
-        app.parse_command_line();
+        if (app.parse_command_line()) {
+            return -1;
+        }
 
         Algorithm algorithm = app.configure(machine);
         std::unique_ptr<Dumper> Dumper = app.dumper_configure();
