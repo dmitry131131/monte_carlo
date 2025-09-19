@@ -6,7 +6,6 @@
 #include <memory>
 
 #include "Core/Error.hpp"
-#include "Config/Config.hpp"
 #include "Algorithm/Algorithm.hpp"
 
 constexpr unsigned RANDOM_SEED = 1234;

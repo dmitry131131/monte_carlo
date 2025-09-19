@@ -46,6 +46,9 @@ private:
     /// Realization of monitoring (run in separated monitoring thread)
     int monitoring();
 
+    /// \brief Create measuring for all thermal zones
+    void get_temperature();
+
     /// Thermal zone vector. Thermal zones enumerated and has /temp file with temperature 
     std::vector<ThermalZone> thermal_zones_;
 
@@ -57,9 +60,6 @@ public:
     Monitor();
     /// @brief get vector of ThermalZones
     const std::vector<ThermalZone> &get_thermal_zones() const {return thermal_zones_;}
-
-    /// \brief Create measuring for all thermal zones
-    void get_temperature();
 
     /*!
         \brief Start monitoring temperature (write temperature for temp_zones history)

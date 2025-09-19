@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <optional>
+#include <stdexcept>
+		
 
 // TODO Сделать эффективную систему возврата кода(строки) ошибки
 using Error_t = std::optional<std::string>;

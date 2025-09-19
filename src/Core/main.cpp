@@ -16,16 +16,15 @@
 // TODO добавить возможность указания интегрируемой функции 1 переменной
 // TODO Add configuration from toml or yaml
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv) try {
     // Create machine, scan system and count available cpu count
     Machine machine;
-    if (!machine.is_valid()) {
-        GENERAL_ERROR("[ERROR] Unable to identify machine resources, to launch integration. Zero CPU available.");
-    }
 
     // Config app: scan command line, configure algorithm
     AppConfig app(argc, argv);
-    app.parse_command_line();
+    if (app.parse_command_line()) {
+        return 0;
+    }
 
     Algorithm algorithm = app.configure(machine);
     std::unique_ptr<Dumper> Dumper = app.dumper_configure();
@@ -40,6 +39,15 @@ int main(int argc, char** argv) {
     Dumper->dump(res);
 
     return 0;
+}
+catch (const machine_error& err) {
+    GENERAL_ERROR(err.what());  // TODO relax machine error handling
+}
+catch (const std::runtime_error& err) {
+    GENERAL_ERROR(err.what());
+}
+catch(...) {
+    GENERAL_ERROR("Unknown error!");
 }
 
 #undef GENERAL_ERROR

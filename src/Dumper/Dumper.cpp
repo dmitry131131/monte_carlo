@@ -1,7 +1,7 @@
 // File implements different dumpers for Algorithm::Result
 #include "Dumper/Dumper.hpp"
 
-void OstreamDumper::dump(const Algorithm::Result &Result) {
+void DefaultDumper::dump(const Algorithm::Result &Result) {
     #define OS_MSG(MSG_) do{     \
         OS_ << MSG_<< std::endl; \
     }while(0)   
@@ -22,13 +22,13 @@ void OstreamDumper::dump(const Algorithm::Result &Result) {
     OS_MSG("\nFunction info:");
     OS_MSG(Result.get_function());
 
-    std::cout << "Temperature info:\n\n";
+    OS_MSG("\nTemperature info:");
 
     for (const auto& zone : Result.get_machine().get_monitor().get_thermal_zones()) {
 
-        std::cout << zone.path_ << '\n' << zone.type_ << '\n';
+        OS_MSG('\n' << zone.path_ << '\n' << zone.type_);
         for (const auto& temp : zone.temperature_) {
-            std::cout << std::chrono::duration<double>(temp.first - zone.start_) << " : " << temp.second << '\n';
+            OS_MSG(std::chrono::duration<double>(temp.first - zone.start_) << " : " << temp.second);
         }
     }
 

@@ -3,6 +3,7 @@
     \brief This code implement core classes and methods of Monte-Carlo integration method
 */
 #pragma once
+#include <stdexcept>
 #include "libcpuid.h"
 #include "Monitor/Monitor.hpp"
 
@@ -12,13 +13,10 @@
 */
 class Machine final {
     int core_count_;    ///< count of available logical cpus
-    bool valid_;        ///< valid status of machine
 
     Monitor monitor_;   ///< System monitor
 public:
     Machine();
-    /// Is machine valid
-    bool is_valid() const {return valid_;}
     /// @brief get real logical count
     /// @return core count
     unsigned get_core_count() const {return core_count_;}
@@ -31,4 +29,8 @@ public:
 };
 
 /// @brief Function dumps cpuid data in pretty view
-void dump_machine_specs();
+void dump_machine_specs() noexcept;
+
+class machine_error final : public std::runtime_error {
+    using std::runtime_error::runtime_error;
+};
