@@ -27,12 +27,19 @@ AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), arg
 
     // dumperType_ has implicitly conversion from std::string
     // TODO check valid dumper name maybe with transformer (-> transform function)
-    app_.add_option("--output-format", dumperType_, "Set output format")->default_val("default-console");
-    app_.add_option("-o,--output", outputFilename_, "Set output filename")->check(CLI::ExistingFile);
+    app_.add_option("--output-format", dumperInfo_, "Set output format")->default_val("default-console")
+        ->check(CLI::IsMember(dumperInfo_.DumpTypeMap));
+
+    app_.add_option("-o,--output", dumperInfo_.outputFilename_, "Set output filename");
 }
 
 int AppConfig::parse_command_line() {
-    CLI11_PARSE(app_, argc_, argv_);
+    try {
+        app_.parse(argc_, argv_);
+    } catch (const CLI::ParseError &e) {
+        app_.exit(e);
+        return 1;
+    }
 
     if (settings_.point_count_ < settings_.core_usage_) {
         settings_.point_count_ = DEFAULT_POINT_COUNT;
@@ -52,26 +59,28 @@ Algorithm AppConfig::configure(const Machine& machine) {
     return Algorithm{machine, function_, settings_};
 }
 
-// TODO Add try - catch blocks into Dangerous dumpers and create default dumper if exception
 std::unique_ptr<Dumper> AppConfig::dumper_configure() {
-    switch (dumperType_.value_)
-    {
-    case DumpType::DumpTypeVal::DEFAULT_CONSOLE:
-        return std::make_unique<OstreamDumper>(std::cout);
-    
-    case DumpType::DumpTypeVal::COLOR_CONSOLE:
-        return std::make_unique<ColorDumper>(std::cout);
+    #define ADD_DUMPER(DUMPER_) {                                       \
+        if (!dumperInfo_.outputFilename_.has_value()) {                 \
+            return std::make_unique<DUMPER_>(std::cout);                \
+        }                                                               \
+        return std::make_unique<DUMPER_>(*dumperInfo_.outputFilename_); \
+    }
 
-    case DumpType::DumpTypeVal::MARKDOWN:
-        if (!outputFilename_.has_value()) {
-            // TODO exception 
-            ERROR_MSG("[ERROR] No output file. Output mode set to default console");
-            return std::make_unique<OstreamDumper>(std::cout); 
-        }
-        return std::make_unique<MDDumper>(*outputFilename_);
+    switch (dumperInfo_.dumperType_)
+    {
+    case DumperInfo::DumpTypeVal::DEFAULT_CONSOLE:
+        ADD_DUMPER(DefaultDumper);
+
+    case DumperInfo::DumpTypeVal::COLOR_CONSOLE:
+        ADD_DUMPER(ColorDumper)
+
+    case DumperInfo::DumpTypeVal::MARKDOWN:
+        ADD_DUMPER(MDDumper);
 
     default:
-        // TODO create exception in this case
-        return std::make_unique<OstreamDumper>(std::cout);
+        throw std::runtime_error{"[ERROR] Unknown error in constructing Dumper. Invalid dumper type"};
     }
+
+    #undef ADD_DUMPER
 }

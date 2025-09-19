@@ -24,37 +24,40 @@ class AppConfig final {
     // Algorithm settings
     Algorithm::Settings settings_ = {DEFAULT_CORE_USAGE, DEFAULT_POINT_COUNT};
     // Function settings
+    // TODO Add function parsing
     Function function_{[](double x){return x;}, 0, 0};
 
     /// Dumper settings
-    class DumpType final {
-    public:
+    struct DumperInfo final {
         enum class DumpTypeVal : unsigned char {
             DEFAULT_CONSOLE,
             COLOR_CONSOLE,
             MARKDOWN
-        } value_ = DumpTypeVal::DEFAULT_CONSOLE;
-    private:
+        } dumperType_ = DumpTypeVal::DEFAULT_CONSOLE;
+
+        std::optional<std::string> outputFilename_ = std::nullopt;  ///< Output filename 
+    
         std::unordered_map<std::string, DumpTypeVal> DumpTypeMap = {
             {"default-console", DumpTypeVal::DEFAULT_CONSOLE},
             {"color-console", DumpTypeVal::COLOR_CONSOLE},
             {"markdown", DumpTypeVal::MARKDOWN} 
         };
-    public:
-        DumpType() : value_(DumpTypeVal::DEFAULT_CONSOLE) {}
-        DumpType(const std::string &str) {
+    
+        DumperInfo() : dumperType_(DumpTypeVal::DEFAULT_CONSOLE) {}
+        DumperInfo(const std::string &str) {
             if (DumpTypeMap.find(str) != DumpTypeMap.end()) {
-                value_ = DumpTypeMap.find(str)->second;
+                dumperType_ = DumpTypeMap.find(str)->second;
+            }
+            else {
+                throw std::invalid_argument("Can't create dumper with \"" + str + "\" name");
             }
         }
-    } dumperType_; ///< Type of dumper
-
-    std::optional<std::string> outputFilename_ = std::nullopt;  ///< Output filename 
+    } dumperInfo_; ///< Type of dumper
 
 public:
     AppConfig(const int argc, const char* const * argv);
     /// @brief function parse command line and fill config info 
-    /// @return return 0 by success and -1 by fail
+    /// @return return 0 by success and 1 by fail
     int parse_command_line();
     
     /// @brief configure Algorithm using command line info 
