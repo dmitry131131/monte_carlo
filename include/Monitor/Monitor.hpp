@@ -51,13 +51,18 @@ private:
     std::vector<ThermalZone> thermal_zones_;
 
     // TODO move this constants into .toml config
-    const std::string thermal_path = "/sys/class/thermal/";
-    const std::string CPU_temperature_type = "x86_pkg_temp";
+    std::string thermal_path = "/sys/class/thermal/";
+    std::string CPU_temperature_type = "x86_pkg_temp";
     static constexpr unsigned temp_precision = 1000;
 public:
     bool enabled_ = false;
 
     Monitor(bool enable);
+    Monitor(const Monitor& other)                   = delete;
+    Monitor& operator= (const Monitor& other)       = delete;
+    Monitor(Monitor&& other) noexcept               = default;
+    Monitor& operator= (Monitor&& other) noexcept   = default;
+
     /// @brief get vector of ThermalZones
     const std::vector<ThermalZone> &get_thermal_zones() const {return thermal_zones_;}
 

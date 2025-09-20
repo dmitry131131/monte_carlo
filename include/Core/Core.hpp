@@ -17,6 +17,11 @@ class Machine final {
     Monitor monitor_;   ///< System monitor
 public:
     Machine(bool enable_monitor = false);
+    Machine(const Machine& other)                   = delete;
+    Machine& operator= (const Machine& other)       = delete;
+    Machine(Machine&& other) noexcept               = default;
+    Machine& operator= (Machine&& other) noexcept   = default;
+
     /// @brief get real logical count
     /// @return core count
     unsigned get_core_count() const {return core_count_;}
