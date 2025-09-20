@@ -59,11 +59,15 @@ public:
     /// @brief function parse command line and fill config info 
     /// @return return 0 by success and 1 by fail
     int parse_command_line();
+
+    /// @brief configure Machine using command line info
+    /// @return constructed Machine
+    Machine machine_configure();
     
     /// @brief configure Algorithm using command line info 
     /// @param[in] machine Machine reference 
     /// @return Algorithm class ready for launch
-    Algorithm configure(const Machine& machine);
+    Algorithm algorithm_configure(const Machine& machine);
 
     /// @brief configure Dumper using command line info
     /// @return unique_ptr on Dumper class

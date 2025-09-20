@@ -16,7 +16,7 @@ class Machine final {
 
     Monitor monitor_;   ///< System monitor
 public:
-    Machine();
+    Machine(bool enable_monitor = false);
     /// @brief get real logical count
     /// @return core count
     unsigned get_core_count() const {return core_count_;}

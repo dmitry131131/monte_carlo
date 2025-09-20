@@ -30,6 +30,7 @@ public:
 */
 class DefaultDumper : public Dumper {
 using Dumper::Dumper;
+
 public: 
     virtual ~DefaultDumper() = default;
 

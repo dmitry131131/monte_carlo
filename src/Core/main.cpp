@@ -17,16 +17,16 @@
 // TODO Add configuration from toml or yaml
 
 int main(int argc, char** argv) try {
-    // Create machine, scan system and count available cpu count
-    Machine machine;
-
     // Config app: scan command line, configure algorithm
     AppConfig app(argc, argv);
     if (app.parse_command_line()) {
         return 0;
     }
 
-    Algorithm algorithm = app.configure(machine);
+    // Create machine, scan system and count available cpu count
+    Machine machine = app.machine_configure();
+
+    Algorithm algorithm = app.algorithm_configure(machine);
     std::unique_ptr<Dumper> Dumper = app.dumper_configure();
 
     machine.get_monitor().start_monitoring();

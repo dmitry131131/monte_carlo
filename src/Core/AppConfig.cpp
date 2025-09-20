@@ -16,7 +16,6 @@ namespace opts {
     return -1;                      \
 }while(0)
 
-// TODO Add options validation
 AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), argv_(argv) {
     app_.add_flag("-v,--verbose", opts::verbose, "Enable verbose mode");
     app_.add_flag_callback("--get-machine-specs", dump_machine_specs, "Dump all machine specs");
@@ -26,7 +25,6 @@ AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), arg
     app_.add_option("-e,--end-limits", function_.end_, "Set end integration limits")->default_val(1);
 
     // dumperType_ has implicitly conversion from std::string
-    // TODO check valid dumper name maybe with transformer (-> transform function)
     app_.add_option("--output-format", dumperInfo_, "Set output format")->default_val("default-console")
         ->check(CLI::IsMember(dumperInfo_.DumpTypeMap));
 
@@ -55,7 +53,13 @@ int AppConfig::parse_command_line() {
     return 0;
 }
 
-Algorithm AppConfig::configure(const Machine& machine) {
+Machine AppConfig::machine_configure() {
+    Machine machine(true);  // TODO Add enable and disable monitor from config or CLI
+
+    return machine;
+}
+
+Algorithm AppConfig::algorithm_configure(const Machine& machine) {
     return Algorithm{machine, function_, settings_};
 }
 

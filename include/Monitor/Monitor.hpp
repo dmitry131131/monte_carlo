@@ -9,8 +9,6 @@
 
 #pragma once
 #include <thread>
-#include <atomic>
-#include <latch>
 #include <vector>
 #include <string>
 
@@ -39,7 +37,7 @@ public:
         void create_record(temp_t temp);
     };
 private:
-    std::atomic<bool> is_monitoring = false;                    /// Variable control monitoring cycle
+    bool is_monitoring_ = false;                                /// Variable control monitoring cycle
     std::thread monitor_;                                       /// Monitoring thread 
     std::chrono::duration<int, std::milli> measuring_period_;   /// Period of measuring 
 
@@ -57,9 +55,30 @@ private:
     const std::string CPU_temperature_type = "x86_pkg_temp";
     static constexpr unsigned temp_precision = 1000;
 public:
-    Monitor();
+    bool enabled_ = false;
+
+    Monitor(bool enable);
     /// @brief get vector of ThermalZones
     const std::vector<ThermalZone> &get_thermal_zones() const {return thermal_zones_;}
+
+    // Element access
+    auto at(std::size_t pos) const {return thermal_zones_.at(pos);}
+    auto operator[] (std::size_t pos) const {return thermal_zones_[pos];}
+    auto front() const {return thermal_zones_.front();}
+    auto back() const {return thermal_path.back();}
+    const auto* data() const {return thermal_zones_.data();}
+
+    // Iterators
+    auto cbegin() const noexcept {return thermal_zones_.cbegin();}
+    auto cend() const noexcept {return thermal_zones_.cend();}
+    auto crbegin() const noexcept {return thermal_zones_.crbegin();}
+    auto crend() const noexcept {return thermal_zones_.crend();}
+
+    // Capacity
+    bool empty() const noexcept {return thermal_zones_.empty();}
+    std::size_t size() const noexcept {return thermal_zones_.size();}
+    std::size_t max_size() const noexcept {return thermal_zones_.max_size();}
+    std::size_t capacity() const noexcept {return thermal_zones_.capacity();}
 
     /*!
         \brief Start monitoring temperature (write temperature for temp_zones history)

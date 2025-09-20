@@ -24,6 +24,11 @@ void DefaultDumper::dump(const Algorithm::Result &Result) {
 
     OS_MSG("\nTemperature info:");
 
+    if (!Result.get_machine().get_monitor().enabled_) {
+        OS_MSG("Monitor disabled!");
+        return;
+    }
+
     for (const auto& zone : Result.get_machine().get_monitor().get_thermal_zones()) {
 
         OS_MSG('\n' << zone.path_ << '\n' << zone.type_);
