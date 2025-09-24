@@ -35,7 +35,3 @@ public:
 
 /// @brief Function dumps cpuid data in pretty view
 void dump_machine_specs() noexcept;
-
-class machine_error final : public std::runtime_error {
-    using std::runtime_error::runtime_error;
-};

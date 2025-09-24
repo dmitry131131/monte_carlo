@@ -24,9 +24,8 @@ Monitor::Monitor(bool enable) try : enabled_(enable) {
     // FIXME set measuring period in config
     measuring_period_ = std::chrono::milliseconds(20);
 }
-catch (const std::runtime_error& err) {
+catch (...) {
     ERROR_MSG("[ERROR] can't create system monitor. Monitor disabled!");
-    ERROR_MSG(err.what());
 
     enable = false;
 }

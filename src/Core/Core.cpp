@@ -12,7 +12,7 @@ extern bool verbose;
 
 Machine::Machine(bool enable_monitor) : core_count_(cpuid_get_total_cpus()), monitor_(enable_monitor) {
     if (core_count_ <= 0) {
-        throw machine_error("CpuId didn't get valid cpu count");
+        throw std::runtime_error("[ERROR] CpuId didn't get valid cpu count");
     }
 }
 namespace {

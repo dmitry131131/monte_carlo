@@ -40,9 +40,6 @@ int main(int argc, char** argv) try {
 
     return 0;
 }
-catch (const machine_error& err) {
-    GENERAL_ERROR(err.what());  // TODO relax machine error handling
-}
 catch (const std::runtime_error& err) {
     GENERAL_ERROR(err.what());
 }
