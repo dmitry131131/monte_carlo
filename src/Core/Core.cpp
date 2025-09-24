@@ -10,9 +10,16 @@ extern bool verbose;
     return -1;                      \
 }while(0)
 
-Machine::Machine(bool enable_monitor) : core_count_(cpuid_get_total_cpus()), monitor_(enable_monitor) {
+Machine::Machine(Monitor::period_t measuring_period, bool enable_monitor) : 
+    core_count_(cpuid_get_total_cpus()) {
     if (core_count_ <= 0) {
         throw std::runtime_error("[ERROR] CpuId didn't get valid cpu count");
+    }
+    try {
+        monitor_ = Monitor{measuring_period, enable_monitor};
+    }
+    catch(...) {
+        monitor_ = std::nullopt;
     }
 }
 namespace {

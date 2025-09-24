@@ -21,6 +21,10 @@ class AppConfig final {
     const int argc_;
     const char* const * argv_;
 
+    // TODO create Machine settings struct
+    // Machine settings
+    bool monitor_enable_ = false;
+
     // Algorithm settings
     Algorithm::Settings settings_ = {DEFAULT_CORE_USAGE, DEFAULT_POINT_COUNT};
     // Function settings

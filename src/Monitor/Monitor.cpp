@@ -4,7 +4,8 @@
 #include "Monitor/Monitor.hpp"
 #include "Core/Error.hpp"
 
-Monitor::Monitor(bool enable) try : enabled_(enable) {
+Monitor::Monitor(period_t measuring_period, bool enable = false) try : 
+    measuring_period_(measuring_period), enabled_(enable) {
     if (!std::filesystem::exists(thermal_path)) {
         throw std::runtime_error{"Thermal path: \"" + thermal_path + "\" is not exist\n"};
     }
@@ -20,9 +21,6 @@ Monitor::Monitor(bool enable) try : enabled_(enable) {
 
         thermal_zones_.emplace_back(ThermalZone{type, path.path().string()});
     }
-
-    // FIXME set measuring period in config
-    measuring_period_ = std::chrono::milliseconds(20);
 }
 catch (...) {
     ERROR_MSG("[ERROR] can't create system monitor. Monitor disabled!");

@@ -24,6 +24,8 @@ AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), arg
     app_.add_option("-s,--start-limits", function_.start_, "Set start integration limits")->default_val(0);
     app_.add_option("-e,--end-limits", function_.end_, "Set end integration limits")->default_val(1);
 
+    app_.add_flag("--enable-monitor", monitor_enable_, "Enable the temperature monitor")->default_val(false);
+
     // dumperType_ has implicitly conversion from std::string
     app_.add_option("--output-format", dumperInfo_, "Set output format")->default_val("default-console")
         ->check(CLI::IsMember(dumperInfo_.DumpTypeMap));
@@ -54,7 +56,7 @@ int AppConfig::parse_command_line() {
 }
 
 Machine AppConfig::machine_configure() {
-    Machine machine(true);  // TODO Add enable and disable monitor from config or CLI
+    Machine machine(std::chrono::milliseconds(20), monitor_enable_);  // TODO Add enable and disable monitor from config or CLI
 
     return machine;
 }

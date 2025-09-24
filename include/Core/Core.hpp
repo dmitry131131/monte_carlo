@@ -14,9 +14,9 @@
 class Machine final {
     int core_count_;    ///< count of available logical cpus
 
-    Monitor monitor_;   ///< System monitor
+    std::optional<Monitor> monitor_;   ///< System monitor
 public:
-    Machine(bool enable_monitor = false);
+    Machine(Monitor::period_t measuring_period, bool enable_monitor = false);
     Machine(const Machine& other)                   = delete;
     Machine& operator= (const Machine& other)       = delete;
     Machine(Machine&& other) noexcept               = default;
@@ -25,12 +25,18 @@ public:
     /// @brief get real logical count
     /// @return core count
     unsigned get_core_count() const {return core_count_;}
+    bool monitor_enabled() const {
+        if (!monitor_.has_value()) {
+            return false;
+        }
+        return monitor_->enabled_;
+    }
     /// @brief get Monitor 
     /// @return Monitor reference
-    Monitor& get_monitor() {return monitor_;}
+    Monitor& get_monitor() {return monitor_.value();}
     /// @brief get const Monitor 
     /// @return const Monitor reference
-    const Monitor& get_monitor() const {return monitor_;}
+    const Monitor& get_monitor() const {return monitor_.value();}
 };
 
 /// @brief Function dumps cpuid data in pretty view

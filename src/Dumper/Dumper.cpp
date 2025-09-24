@@ -24,7 +24,7 @@ void DefaultDumper::dump(const Algorithm::Result &Result) {
 
     OS_MSG("\nTemperature info:");
 
-    if (!Result.get_machine().get_monitor().enabled_) {
+    if (!Result.get_machine().monitor_enabled()) {
         OS_MSG("Monitor disabled!");
         return;
     }
@@ -43,7 +43,7 @@ void DefaultDumper::dump(const Algorithm::Result &Result) {
 void ColorDumper::dump(const Algorithm::Result &Result) {
 
     #define STYLE_OS_MSG(MSG_, STYLE_) do{  \
-        set_style((STYLE_));                  \
+        set_style((STYLE_));                \
         OS_ << MSG_<< std::endl;            \
         set_style(StyleCode::RESET);        \
     }while(0)  

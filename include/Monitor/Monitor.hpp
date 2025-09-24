@@ -20,6 +20,7 @@ public:
     using temp_t         = double; 
     using chrono_t       = std::chrono::steady_clock;
     using time_point_t   = std::chrono::time_point<chrono_t>;
+    using period_t       = std::chrono::duration<int, std::milli>;
     using temp_point_t   = std::pair<time_point_t, temp_t>;
     using temp_history_t = std::vector<temp_point_t>;
 
@@ -39,7 +40,7 @@ public:
 private:
     bool is_monitoring_ = false;                                /// Variable control monitoring cycle
     std::thread monitor_;                                       /// Monitoring thread 
-    std::chrono::duration<int, std::milli> measuring_period_;   /// Period of measuring 
+    period_t measuring_period_;                                 /// Period of measuring 
 
     /// Realization of monitoring (run in separated monitoring thread)
     int monitoring();
@@ -57,7 +58,7 @@ private:
 public:
     bool enabled_ = false;
 
-    Monitor(bool enable);
+    Monitor(period_t measuring_period, bool enable);
     Monitor(const Monitor& other)                   = delete;
     Monitor& operator= (const Monitor& other)       = delete;
     Monitor(Monitor&& other) noexcept               = default;
