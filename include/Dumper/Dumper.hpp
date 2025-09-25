@@ -12,7 +12,14 @@
 	\brief Base dumper class that declare common dumper structure 
 */
 class Dumper {
+protected:
+    std::ofstream OFS_;
+    std::ostream &OS_ = OFS_;
+
 public:
+    Dumper(std::ostream &OS) : OS_(OS) {}
+    Dumper(const std::string &str) : OFS_(str) {}
+
     /// Dumper function
     virtual void dump(const Algorithm::Result &Result) = 0;
     virtual ~Dumper() = default;
@@ -21,13 +28,11 @@ public:
 /*!
 	\brief OstreamDumper dumps result into ostream
 */
-class OstreamDumper : public Dumper {
-protected:
-    /// Output stream to dump 
-    std::ostream &OS_;
+class DefaultDumper : public Dumper {
+using Dumper::Dumper;
+
 public: 
-    explicit OstreamDumper(std::ostream &OS) : OS_(OS) {}
-    virtual ~OstreamDumper() = default;
+    virtual ~DefaultDumper() = default;
 
     void dump(const Algorithm::Result &Result) override;
 };
@@ -35,7 +40,8 @@ public:
 /*!
 	\brief ColorDumper dumps result into ostream in colored format (Escape codes)
 */
-class ColorDumper final : public OstreamDumper {
+class ColorDumper final : public Dumper {
+using Dumper::Dumper;
 private:
     /// Style codes for creating escape codes  
     enum class StyleCode : char {
@@ -72,8 +78,6 @@ private:
     }
 
 public:
-    explicit ColorDumper(std::ostream &OS) : OstreamDumper(OS) {}
-
     void dump(const Algorithm::Result &Result) override;
 };
 
@@ -81,10 +85,7 @@ public:
 	\brief MDDumper dumps result into markdown 
 */
 class MDDumper final : public Dumper {
-private:
-    /// File stream to dump MarkDown dump there
-    std::ofstream OS_;
+using Dumper::Dumper;
 public:
-    explicit MDDumper(const std::string &str) : OS_(str) {}
     void dump(const Algorithm::Result &Result) override;
 };

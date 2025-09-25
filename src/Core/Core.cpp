@@ -10,12 +10,16 @@ extern bool verbose;
     return -1;                      \
 }while(0)
 
-// TODO Система ошибок и уровней логирования 
-
-Machine::Machine() : core_count_(cpuid_get_total_cpus()),
-                     valid_(false) {
-    if (core_count_ > 0) {
-        valid_ = true;
+Machine::Machine(Monitor::Settings settings, bool enable_monitor) : 
+    core_count_(cpuid_get_total_cpus()) {
+    if (core_count_ <= 0) {
+        throw std::runtime_error("[ERROR] CpuId didn't get valid cpu count");
+    }
+    try {
+        monitor_ = Monitor{settings, enable_monitor};
+    }
+    catch(...) {
+        monitor_ = std::nullopt;
     }
 }
 namespace {
@@ -38,7 +42,7 @@ int get_cpu_id_data(cpu_id_t& data) {
 }
 } // namespace
 
-void dump_machine_specs() {
+void dump_machine_specs() noexcept {
     cpu_id_t data = {};
 
     if (get_cpu_id_data(data)) {

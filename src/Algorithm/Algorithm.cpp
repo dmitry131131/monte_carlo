@@ -6,7 +6,6 @@
 #include <memory>
 
 #include "Core/Error.hpp"
-#include "Config/Config.hpp"
 #include "Algorithm/Algorithm.hpp"
 
 constexpr unsigned RANDOM_SEED = 1234;
@@ -25,7 +24,7 @@ namespace {
 void integrate(const std::function<double(double)>& func, double start, 
                double end, unsigned count_points, double& result, std::mutex& mutex) {
     std::mt19937 engine(RANDOM_SEED);
-    const double multi_const = (end-start)/static_cast<double>(engine.max());
+    const double multi_const = (end - start) / static_cast<double>(engine.max());
 
     double local_result = 0;
     
@@ -47,7 +46,7 @@ Algorithm::Result Algorithm::launch() {
 
     Result result_conclusion{machine_, settings_, function_};
 
-    double step = (function_.end_ - function_.start_)/static_cast<double>(settings_.core_usage_);
+    double step = (function_.end_ - function_.start_) / static_cast<double>(settings_.core_usage_);
     double current_start = function_.start_;
     unsigned points_per_frame = static_cast<unsigned>(settings_.point_count_ / settings_.core_usage_);
 

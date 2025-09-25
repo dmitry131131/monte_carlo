@@ -6,9 +6,7 @@
 
 #include <iostream>
 #include <optional>
-
-// TODO Сделать эффективную систему возврата кода(строки) ошибки
-using Error_t = std::optional<std::string>;
+#include <stdexcept>
 
 #define ERROR_MSG(MSG_) do{         \
     std::cerr << MSG_ << std::endl; \

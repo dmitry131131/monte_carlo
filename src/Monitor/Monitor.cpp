@@ -4,13 +4,13 @@
 #include "Monitor/Monitor.hpp"
 #include "Core/Error.hpp"
 
-Monitor::Monitor() {
-    if (!std::filesystem::exists(thermal_path)) {
-        ERROR_MSG("Thermal path: " << thermal_path << " is not exist\n");
-        return;
+Monitor::Monitor(Settings settings, bool enable) try : 
+    settings_(settings), enabled_(enable) {
+    if (!std::filesystem::exists(settings_.thermal_path_)) {
+        throw std::runtime_error{"Thermal path: \"" + settings_.thermal_path_ + "\" is not exist\n"};
     }
 
-    for (const auto &path : std::filesystem::directory_iterator(thermal_path)) {
+    for (const auto &path : std::filesystem::directory_iterator(settings_.thermal_path_)) {
         if (!std::filesystem::exists(path.path().string() + "/type") || 
             !std::filesystem::exists(path.path().string() + "/temp")) {
             continue;
@@ -21,9 +21,11 @@ Monitor::Monitor() {
 
         thermal_zones_.emplace_back(ThermalZone{type, path.path().string()});
     }
+}
+catch (...) {
+    ERROR_MSG("[ERROR] can't create system monitor. Monitor disabled!");
 
-    // FIXME set measuring period in config
-    measuring_period_ = std::chrono::milliseconds(20);
+    enable = false;
 }
 
 void Monitor::get_temperature() {    
@@ -31,7 +33,7 @@ void Monitor::get_temperature() {
         unsigned temp = 0;
         std::ifstream(zone.path_ + "/temp") >> temp;
 
-        zone.create_record(static_cast<temp_t>(temp / temp_precision));
+        zone.create_record(static_cast<temp_t>(temp / settings_.temp_precision_));
     }
 }
 
@@ -39,28 +41,49 @@ void Monitor::ThermalZone::create_record(Monitor::temp_t temp) {
     temperature_.emplace_back(std::make_pair(chrono_t::now(), temp));
 }
 
-int Monitor::start_monitoring() {
-    is_monitoring = true;
+int Monitor::start_monitoring() try {
+    if (!enabled_) {return 0;}
+
+    is_monitoring_ = true;
 
     monitor_ = std::thread(&Monitor::monitoring, this);
 
     return 0;
 }
+catch (...) {
+    ERROR_MSG("[ERROR] Fail in start monitoring! Monitor disabled!");
+    enabled_ = false;
+    is_monitoring_ = false;
+
+    return 1;
+}
 
 int Monitor::stop_monitoring() {
-    is_monitoring = false;
+    if (!enabled_) {return 0;}
+
+    is_monitoring_ = false;
 
     monitor_.join();
 
     return 0;
 }
 
-int Monitor::monitoring() {
-    while (is_monitoring)
+int Monitor::monitoring() try {
+    if (!enabled_) {return 0;}
+    
+    while (is_monitoring_)
     {
         get_temperature();
-        std::this_thread::sleep_for(measuring_period_);
+        std::this_thread::sleep_for(settings_.measuring_period_);
     }
     
     return 0;
+}
+catch(...) {
+    ERROR_MSG("[ERROR] Fail during monitoring! Monitor disabled!");
+    stop_monitoring();
+
+    enabled_ = false;
+
+    return 1;
 }

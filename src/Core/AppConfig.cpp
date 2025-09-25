@@ -16,22 +16,30 @@ namespace opts {
     return -1;                      \
 }while(0)
 
-// TODO Add options validation
 AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), argv_(argv) {
     app_.add_flag("-v,--verbose", opts::verbose, "Enable verbose mode");
     app_.add_flag_callback("--get-machine-specs", dump_machine_specs, "Dump all machine specs");
-    app_.add_option("-c,--core-count", settings_.core_usage_, "Set count of usable cores default value 1")->required();
-    app_.add_option("-p,--point-count", settings_.point_count_, "Set count amount of integration points")->required();
-    app_.add_option("-s,--start-limits", function_.start_, "Set start integration limits")->required();
-    app_.add_option("-e,--end-limits", function_.end_, "Set end integration limits")->required();
+    app_.add_option("-c,--core-count", settings_.core_usage_, "Set count of usable cores default value 1")->default_val(DEFAULT_CORE_USAGE);
+    app_.add_option("-p,--point-count", settings_.point_count_, "Set count amount of integration points")->default_val(DEFAULT_POINT_COUNT);
+    app_.add_option("-s,--start-limits", function_.start_, "Set start integration limits")->default_val(0);
+    app_.add_option("-e,--end-limits", function_.end_, "Set end integration limits")->default_val(1);
+
+    app_.add_flag("--enable-monitor", monitor_enable_, "Enable the temperature monitor")->default_val(false);
 
     // dumperType_ has implicitly conversion from std::string
-    app_.add_option("--output-format", dumperType_, "Set output format");
-    app_.add_option("-o,--output", outputFilename_, "Set output filename");
+    app_.add_option("--output-format", dumperInfo_, "Set output format")->default_val("default-console")
+        ->check(CLI::IsMember(dumperInfo_.DumpTypeMap));
+
+    app_.add_option("-o,--output", dumperInfo_.outputFilename_, "Set output filename");
 }
 
 int AppConfig::parse_command_line() {
-    CLI11_PARSE(app_, argc_, argv_);
+    try {
+        app_.parse(argc_, argv_);
+    } catch (const CLI::ParseError &e) {
+        app_.exit(e);
+        return 1;
+    }
 
     if (settings_.point_count_ < settings_.core_usage_) {
         settings_.point_count_ = DEFAULT_POINT_COUNT;
@@ -47,29 +55,39 @@ int AppConfig::parse_command_line() {
     return 0;
 }
 
-Algorithm AppConfig::configure(const Machine& machine) {
+Machine AppConfig::machine_configure() {
+    // TODO move this constants into .toml config
+    Machine machine({std::chrono::milliseconds(20), "/sys/class/thermal/", 1000}, monitor_enable_);
+
+    return machine;
+}
+
+Algorithm AppConfig::algorithm_configure(const Machine& machine) {
     return Algorithm{machine, function_, settings_};
 }
 
 std::unique_ptr<Dumper> AppConfig::dumper_configure() {
-    switch (dumperType_.value_)
-    {
-    case DumpType::DumpTypeVal::DEFAULT_CONSOLE:
-        return std::make_unique<OstreamDumper>(std::cout);
-    
-    case DumpType::DumpTypeVal::COLOR_CONSOLE:
-        return std::make_unique<ColorDumper>(std::cout);
+    #define ADD_DUMPER(DUMPER_) {                                       \
+        if (!dumperInfo_.outputFilename_.has_value()) {                 \
+            return std::make_unique<DUMPER_>(std::cout);                \
+        }                                                               \
+        return std::make_unique<DUMPER_>(*dumperInfo_.outputFilename_); \
+    }
 
-    case DumpType::DumpTypeVal::MARKDOWN:
-        if (!outputFilename_.has_value()) {
-            // TODO exception 
-            ERROR_MSG("[ERROR] No output file. Output mode set to default console");
-            return std::make_unique<OstreamDumper>(std::cout); 
-        }
-        return std::make_unique<MDDumper>(*outputFilename_);
+    switch (dumperInfo_.dumperType_)
+    {
+    case DumperInfo::DumpTypeVal::DEFAULT_CONSOLE:
+        ADD_DUMPER(DefaultDumper);
+
+    case DumperInfo::DumpTypeVal::COLOR_CONSOLE:
+        ADD_DUMPER(ColorDumper)
+
+    case DumperInfo::DumpTypeVal::MARKDOWN:
+        ADD_DUMPER(MDDumper);
 
     default:
-        // TODO create exception in this case
-        return std::make_unique<OstreamDumper>(std::cout);
+        throw std::runtime_error{"[ERROR] Unknown error in constructing Dumper. Invalid dumper type"};
     }
+
+    #undef ADD_DUMPER
 }

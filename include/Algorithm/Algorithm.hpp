@@ -32,7 +32,7 @@ public:
     /*!
         \brief Struct represents algorithm settings
     */
-    struct Settings {
+    struct Settings final {
         unsigned core_usage_;   ///< Core useage by the algorithm
         unsigned point_count_;  ///< Random generated points count usage by the algorithm
 
