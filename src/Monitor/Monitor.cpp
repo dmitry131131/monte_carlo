@@ -4,13 +4,13 @@
 #include "Monitor/Monitor.hpp"
 #include "Core/Error.hpp"
 
-Monitor::Monitor(period_t measuring_period, bool enable = false) try : 
-    measuring_period_(measuring_period), enabled_(enable) {
-    if (!std::filesystem::exists(thermal_path)) {
-        throw std::runtime_error{"Thermal path: \"" + thermal_path + "\" is not exist\n"};
+Monitor::Monitor(Settings settings, bool enable) try : 
+    settings_(settings), enabled_(enable) {
+    if (!std::filesystem::exists(settings_.thermal_path_)) {
+        throw std::runtime_error{"Thermal path: \"" + settings_.thermal_path_ + "\" is not exist\n"};
     }
 
-    for (const auto &path : std::filesystem::directory_iterator(thermal_path)) {
+    for (const auto &path : std::filesystem::directory_iterator(settings_.thermal_path_)) {
         if (!std::filesystem::exists(path.path().string() + "/type") || 
             !std::filesystem::exists(path.path().string() + "/temp")) {
             continue;
@@ -33,7 +33,7 @@ void Monitor::get_temperature() {
         unsigned temp = 0;
         std::ifstream(zone.path_ + "/temp") >> temp;
 
-        zone.create_record(static_cast<temp_t>(temp / temp_precision));
+        zone.create_record(static_cast<temp_t>(temp / settings_.temp_precision_));
     }
 }
 
@@ -74,7 +74,7 @@ int Monitor::monitoring() try {
     while (is_monitoring_)
     {
         get_temperature();
-        std::this_thread::sleep_for(measuring_period_);
+        std::this_thread::sleep_for(settings_.measuring_period_);
     }
     
     return 0;

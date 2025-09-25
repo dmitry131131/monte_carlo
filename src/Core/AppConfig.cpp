@@ -56,7 +56,8 @@ int AppConfig::parse_command_line() {
 }
 
 Machine AppConfig::machine_configure() {
-    Machine machine(std::chrono::milliseconds(20), monitor_enable_);  // TODO Add enable and disable monitor from config or CLI
+    // TODO move this constants into .toml config
+    Machine machine({std::chrono::milliseconds(20), "/sys/class/thermal/", 1000}, monitor_enable_);
 
     return machine;
 }

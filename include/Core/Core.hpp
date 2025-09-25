@@ -16,7 +16,7 @@ class Machine final {
 
     std::optional<Monitor> monitor_;   ///< System monitor
 public:
-    Machine(Monitor::period_t measuring_period, bool enable_monitor = false);
+    Machine(Monitor::Settings settings, bool enable_monitor = false);
     Machine(const Machine& other)                   = delete;
     Machine& operator= (const Machine& other)       = delete;
     Machine(Machine&& other) noexcept               = default;

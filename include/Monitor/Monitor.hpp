@@ -37,28 +37,31 @@ public:
         /// \brief Add new record to temperature history
         void create_record(temp_t temp);
     };
+    /*!
+        \brief Struct implements Monitoring settings
+    */
+    struct Settings {
+        period_t measuring_period_;   ///< Period of measuring 
+        std::string thermal_path_;    ///< Path to thermal zones    
+        unsigned temp_precision_;     ///< Precision of temperature measuring
+    };
 private:
-    bool is_monitoring_ = false;                                /// Variable control monitoring cycle
-    std::thread monitor_;                                       /// Monitoring thread 
-    period_t measuring_period_;                                 /// Period of measuring 
+    Settings settings_;             /// Settings of the Monitor
+    bool is_monitoring_ = false;    /// Variable control monitoring cycle
+    std::thread monitor_;           /// Monitoring thread 
+
+    /// Thermal zone vector. Thermal zones enumerated and has /temp file with temperature 
+    std::vector<ThermalZone> thermal_zones_;
 
     /// Realization of monitoring (run in separated monitoring thread)
     int monitoring();
 
     /// \brief Create measuring for all thermal zones
     void get_temperature();
-
-    /// Thermal zone vector. Thermal zones enumerated and has /temp file with temperature 
-    std::vector<ThermalZone> thermal_zones_;
-
-    // TODO move this constants into .toml config
-    std::string thermal_path = "/sys/class/thermal/";
-    std::string CPU_temperature_type = "x86_pkg_temp";
-    static constexpr unsigned temp_precision = 1000;
 public:
     bool enabled_ = false;
 
-    Monitor(period_t measuring_period, bool enable);
+    Monitor(Settings settings, bool enable = false);
     Monitor(const Monitor& other)                   = delete;
     Monitor& operator= (const Monitor& other)       = delete;
     Monitor(Monitor&& other) noexcept               = default;
@@ -66,12 +69,13 @@ public:
 
     /// @brief get vector of ThermalZones
     const std::vector<ThermalZone> &get_thermal_zones() const {return thermal_zones_;}
+    const Settings& get_settings() const {return settings_;}
 
     // Element access
     auto at(std::size_t pos) const {return thermal_zones_.at(pos);}
     auto operator[] (std::size_t pos) const {return thermal_zones_[pos];}
     auto front() const {return thermal_zones_.front();}
-    auto back() const {return thermal_path.back();}
+    auto back() const {return thermal_zones_.back();}
     const auto* data() const {return thermal_zones_.data();}
 
     // Iterators
