@@ -28,7 +28,7 @@ public:
 /*!
 	\brief OstreamDumper dumps result into ostream
 */
-class DefaultDumper : public Dumper {
+class DefaultDumper final : public Dumper {
 using Dumper::Dumper;
 
 public: 

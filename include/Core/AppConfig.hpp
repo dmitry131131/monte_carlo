@@ -23,7 +23,9 @@ class AppConfig final {
 
     // TODO create Machine settings struct
     // Machine settings
-    bool monitor_enable_ = false;
+    struct MachineInfo final {
+        bool monitor_enable_;
+    } monitorInfo_;
 
     // Algorithm settings
     Algorithm::Settings settings_ = {DEFAULT_CORE_USAGE, DEFAULT_POINT_COUNT};

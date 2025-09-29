@@ -16,6 +16,7 @@ namespace opts {
     return -1;                      \
 }while(0)
 
+// TODO Add CLI groups with machine settings, algorithm settings and dumper settings
 AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), argv_(argv) {
     app_.add_flag("-v,--verbose", opts::verbose, "Enable verbose mode");
     app_.add_flag_callback("--get-machine-specs", dump_machine_specs, "Dump all machine specs");
@@ -24,7 +25,7 @@ AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), arg
     app_.add_option("-s,--start-limits", function_.start_, "Set start integration limits")->default_val(0);
     app_.add_option("-e,--end-limits", function_.end_, "Set end integration limits")->default_val(1);
 
-    app_.add_flag("--enable-monitor", monitor_enable_, "Enable the temperature monitor")->default_val(false);
+    app_.add_flag("--enable-monitor", monitorInfo_.monitor_enable_, "Enable the temperature monitor")->default_val(false);
 
     // dumperType_ has implicitly conversion from std::string
     app_.add_option("--output-format", dumperInfo_, "Set output format")->default_val("default-console")
@@ -57,7 +58,7 @@ int AppConfig::parse_command_line() {
 
 Machine AppConfig::machine_configure() {
     // TODO move this constants into .toml config
-    Machine machine({std::chrono::milliseconds(20), "/sys/class/thermal/", 1000}, monitor_enable_);
+    Machine machine({std::chrono::milliseconds(20), "/sys/class/thermal/", 1000}, monitorInfo_.monitor_enable_);
 
     return machine;
 }
