@@ -20,7 +20,7 @@ void DefaultDumper::dump(const Algorithm::Result &Result) {
     OS_MSG(Result.get_algorithm_settings());
 
     OS_MSG("\nFunction info:");
-    OS_MSG(Result.get_function());
+    OS_MSG(Result.get_function_settings());
 
     OS_MSG("\nTemperature info:");
 
@@ -67,7 +67,7 @@ void ColorDumper::dump(const Algorithm::Result &Result) {
     OS_MSG(Result.get_algorithm_settings());
 
     STYLE_OS_MSG("\nFunction info:", StyleCode::BOLD);
-    OS_MSG(Result.get_function());
+    OS_MSG(Result.get_function_settings());
 
     #undef OS_MSG
     #undef STYLE_OS_MSG
@@ -93,6 +93,6 @@ void MDDumper::dump(const Algorithm::Result &Result) {
     OS_MSG("Point count: " << Result.get_algorithm_settings().point_count_);
 
     OS_MSG("\n## Function info:");
-    OS_MSG("Start limit: " << Result.get_function().start_ << "\\");
-    OS_MSG("End limit: " << Result.get_function().end_);
+    OS_MSG("Start limit: " << Result.get_function_settings().start_ << "\\");
+    OS_MSG("End limit: " << Result.get_function_settings().end_);
 }

@@ -9,18 +9,28 @@
 	\brief Struct represents function in monte-carlo algorithm
 */
 class Function final {
-    NodePtr func_;                              ///< f(x)
-    std::string text_;                          ///< Text variant of fuction
-    double start_;                              ///< Start integration limit
-    double end_;                                ///< End integration limit
+public:
+    struct Settings final {
+        std::string text_;  ///< Text variant of fuction
+        double start_;      ///< Start integration limit
+        double end_;        ///< End integration limit
+
+        friend std::ostream& operator<< (std::ostream& os, const Settings& func);
+    };
+
+private:
+    std::shared_ptr<FunctionNode> func_;    ///< function root node
+    Settings settings_;                     ///< Function settings
 public:
     Function(const std::string& text, double start, double end);
 
-    double operator() (double x) {return func_->calculate(x);}
+    double operator() (double x) const {return func_->calculate(x);}
 
     // Getters
-    double get_start() const {return start_;}
-    double get_end() const {return end_;}
+    const Settings& get_settings() const {return settings_;}
+    const std::string& get_text() const {return settings_.text_;}
+    double get_start() const {return settings_.start_;}
+    double get_end() const {return settings_.end_;}
     
     friend std::ostream& operator<< (std::ostream& os, const Function& func);
 };

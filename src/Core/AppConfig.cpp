@@ -26,7 +26,7 @@ AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), arg
                       ->default_val(DEFAULT_POINT_COUNT);
 
     auto function_settings = app_.add_option_group("Function", "Function settings");
-    function_settings->add_option("-f,--function", functionInfo_.text_, "Set integrated function")->default_val("(12+x)^22");
+    function_settings->add_option("-f,--function", functionInfo_.text_, "Set integrated function")->default_val("x");
     function_settings->add_option("-s,--start-limits", functionInfo_.start_, "Set start integration limits")->default_val(0);
     function_settings->add_option("-e,--end-limits", functionInfo_.end_, "Set end integration limits")->default_val(1);
 

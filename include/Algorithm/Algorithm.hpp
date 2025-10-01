@@ -38,14 +38,14 @@ public:
         std::chrono::time_point<std::chrono::steady_clock> end_;    ///< Finalization Result time pont
         std::chrono::duration<double> duration_;                    ///< Duration of Result object lifetime
 
-        const Machine& machine_;        ///< Machine information
-        const Settings settings_;       ///< Algorithm settings
-        const Function function_;       ///< Function integration information
+        const Machine& machine_;                        ///< Machine information
+        const Settings settings_;                       ///< Algorithm settings
+        const Function::Settings function_settings_;    ///< Function integration information
 
         bool isValid_ = false;  ///< Result is not valid before the set_result() call
     public:
         /// Start object lifetime end start timer
-        Result(const Machine& machine, const Settings& settings, const Function function);
+        Result(const Machine& machine, const Settings& settings, Function::Settings function_settings);
 
         /// @brief Set result, stop timer and calculate duration, set Result valid
         void set_result(double result);
@@ -56,7 +56,7 @@ public:
 
         const Machine& get_machine() const {return machine_;}
         const Settings& get_algorithm_settings() const {return settings_;}
-        const Function& get_function() const {return function_;}
+        const Function::Settings& get_function_settings() const {return function_settings_;}
     };
 
 private:
@@ -69,6 +69,11 @@ public:
     /// @brief get machine reference
     /// @return const machine reference
     const Machine& get_machine() const {return machine_;}
+
+    double calculate_function(double x) const {
+        return function_(x);
+    }
+
     /// @brief Launch Monte-Carlo algorithm
     Result launch();
 };

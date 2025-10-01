@@ -5,7 +5,7 @@
 
 class FunctionNode {
 public:
-    virtual double calculate(double x) = 0;
+    virtual double calculate(double x) const = 0;
     virtual ~FunctionNode() = default;
 };
 
@@ -25,8 +25,9 @@ private:
     NodePtr left_;
     NodePtr right_;
 public:
-    BinaryOperator(BinaryOperatorType type, FunctionNode *left, FunctionNode *right) : type_(type), left_(left), right_(right) {}
-    double calculate(double x) override;
+    BinaryOperator(BinaryOperatorType type, NodePtr &&left, NodePtr &&right) : 
+                                      type_(type), left_(std::move(left)), right_(std::move(right)) {}
+    double calculate(double x) const override;
 
     // Getters
     BinaryOperatorType get_type() {return type_;}
@@ -44,8 +45,8 @@ private:
     UnaryOperatorType type_;
     NodePtr next_;
 public:
-    UnaryOperator(UnaryOperatorType type, NodePtr next) : type_(type), next_(next) {}
-    double calculate(double x) override;
+    UnaryOperator(UnaryOperatorType type, NodePtr &&next) : type_(type), next_(std::move(next)) {}
+    double calculate(double x) const override;
 
     // Getters
     UnaryOperatorType get_type() {return type_;}
@@ -56,12 +57,12 @@ class Number final : public FunctionNode {
     double number_;
 public:
     Number(double number) : number_(number) {}
-    double calculate(double x) override {return number_;}
+    double calculate(double x) const override {(void) x;  return number_;}
 };
 
 class Variable final : public FunctionNode {
 public:
-    double calculate(double x) override {return x;}
+    double calculate(double x) const override {return x;}
 };
 
-NodePtr getExpr(std::vector<Token>::const_iterator current);
+NodePtr getExpr(const std::vector<Token>& vector, std::vector<Token>::const_iterator& current);
