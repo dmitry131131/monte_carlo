@@ -46,8 +46,8 @@ Algorithm::Result Algorithm::launch() {
 
     Result result_conclusion{machine_, settings_, function_};
 
-    double step = (function_.end_ - function_.start_) / static_cast<double>(settings_.core_usage_);
-    double current_start = function_.start_;
+    double step = (function_.get_end() - function_.get_start()) / static_cast<double>(settings_.core_usage_);
+    double current_start = function_.get_start();
     unsigned points_per_frame = static_cast<unsigned>(settings_.point_count_ / settings_.core_usage_);
 
     for (size_t i = 0; i < settings_.core_usage_; i++) {
@@ -92,13 +92,6 @@ std::optional<std::chrono::duration<double>> Algorithm::Result::get_duration() c
     }
 
     return std::nullopt;
-}
-
-std::ostream& operator<< (std::ostream& os, const Function& func) {
-    os << "Start limit: " << func.start_ << '\n';
-    os << "End limit: " << func.end_;
-
-    return os;
 }
 
 std::ostream& operator<< (std::ostream& os, const Algorithm::Settings& settings) {

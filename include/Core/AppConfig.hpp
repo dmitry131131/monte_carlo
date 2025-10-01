@@ -31,7 +31,12 @@ class AppConfig final {
     Algorithm::Settings settings_ = {DEFAULT_CORE_USAGE, DEFAULT_POINT_COUNT};
     // Function settings
     // TODO Add function parsing
-    Function function_{[](double x){return x;}, 0, 0};
+
+    struct FunctionInfo {
+        std::string text_;
+        double start_;
+        double end_;
+    } functionInfo_;
 
     /// Dumper settings
     struct DumperInfo final {

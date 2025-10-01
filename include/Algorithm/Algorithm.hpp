@@ -5,24 +5,10 @@
 #pragma once
 #include <chrono>
 #include <limits>
-#include <functional>
 #include <optional>
 
-#include <Core/Core.hpp>
-
-/*!
-	\brief Struct represents function in monte-carlo algorithm
-*/
-struct Function final {
-    const std::function<double(double)> func_;  ///< Fuction f(x)
-    double start_;                              ///< Start integration limit
-    double end_;                                ///< End integration limit
-
-    Function(const std::function<double(double)>& func, double start, double end) :
-                                                    func_(func), start_(start), end_(end) {}
-    
-    friend std::ostream& operator<< (std::ostream& os, const Function& func);
-};
+#include "Core/Core.hpp"
+#include "Algorithm/Function.hpp"
 
 /*!
 	\brief Class represents monte-carlo algorithm
