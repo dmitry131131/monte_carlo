@@ -29,6 +29,9 @@ void Token::tokenize(const std::string& expression, std::vector<Token> &tokens) 
         else if (std::isdigit(cur) || cur == '.') {
             digit_token += cur;
         }
+        else {
+            throw std::runtime_error("[ERROR] Invalid symbol in function");
+        }
     }
 
     if (!digit_token.empty()) {

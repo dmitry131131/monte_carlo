@@ -30,8 +30,7 @@ class AppConfig final {
     // Algorithm settings
     Algorithm::Settings settings_ = {DEFAULT_CORE_USAGE, DEFAULT_POINT_COUNT};
     // Function settings
-    // TODO Add function parsing
-
+    // TODO change to Function::Settings
     struct FunctionInfo {
         std::string text_;
         double start_;

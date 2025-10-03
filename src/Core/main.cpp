@@ -12,8 +12,6 @@
     return -1;                      \
 }while(0)
 
-// TODO добавить возможность указания интегрируемой функции 1 переменной
-
 int main(int argc, char** argv) try {
     // Config app: scan command line, configure algorithm
     AppConfig app(argc, argv);
@@ -26,10 +24,6 @@ int main(int argc, char** argv) try {
 
     Algorithm algorithm = app.algorithm_configure(machine);
     std::unique_ptr<Dumper> Dumper = app.dumper_configure();
-
-    ERROR_MSG("0: " << algorithm.calculate_function(0));
-    ERROR_MSG("1: " << algorithm.calculate_function(1));
-    ERROR_MSG("2: " << algorithm.calculate_function(2));
 
     machine.get_monitor().start_monitoring();
 

@@ -8,15 +8,6 @@ Function::Function(const std::string& text, double start, double end) : settings
     std::vector<Token> tokens;
     Token::tokenize(text, tokens);
 
-    for (auto token : tokens) {
-        if (token.is_number()) {
-            ERROR_MSG(token.get_double());
-        }
-        if (token.is_symbol()) {
-            ERROR_MSG(static_cast<unsigned>(token.get_symbol()));
-        }
-    }
-
     auto first_token = tokens.cbegin();
     func_ = getExpr(tokens, first_token);
 }

@@ -19,7 +19,7 @@ double BinaryOperator::calculate(double x) const {
     case BinaryOperatorType::MULTIPLY:
         return left_value * right_value;
     case BinaryOperatorType::DIVISION:
-        return left_value * right_value;
+        return left_value / right_value;
     case BinaryOperatorType::POWER:
         return std::pow(left_value, right_value);
         
@@ -69,9 +69,11 @@ NodePtr getTerm(const std::vector<Token>& vector, std::vector<Token>::const_iter
         switch (symbol)
         {
         case Token::Symbol::MULTIPLY:
-            return std::make_unique<BinaryOperator>(BinaryOperator::BinaryOperatorType::MULTIPLY, std::move(left_side), std::move(right_side));
+            left_side = std::make_unique<BinaryOperator>(BinaryOperator::BinaryOperatorType::MULTIPLY, std::move(left_side), std::move(right_side));
+            break;
         case Token::Symbol::DIVISION:
-            return std::make_unique<BinaryOperator>(BinaryOperator::BinaryOperatorType::DIVISION, std::move(left_side), std::move(right_side));
+            left_side = std::make_unique<BinaryOperator>(BinaryOperator::BinaryOperatorType::DIVISION, std::move(left_side), std::move(right_side));
+            break;
         default:
             break;
         }
@@ -160,13 +162,15 @@ NodePtr getExpr(const std::vector<Token>& vector, std::vector<Token>::const_iter
         switch (symbol)
         {
         case Token::Symbol::PLUS:
-            return std::make_unique<BinaryOperator>(BinaryOperator::BinaryOperatorType::PLUS, std::move(left_side), std::move(right_side));
+            left_side = std::make_unique<BinaryOperator>(BinaryOperator::BinaryOperatorType::PLUS, std::move(left_side), std::move(right_side));
+            break;
         case Token::Symbol::MINUS:
-            return std::make_unique<BinaryOperator>(BinaryOperator::BinaryOperatorType::MINUS, std::move(left_side), std::move(right_side));
+            left_side = std::make_unique<BinaryOperator>(BinaryOperator::BinaryOperatorType::MINUS, std::move(left_side), std::move(right_side));    
+            break;
         default:
             break;
         }
     }
-    
+
     return left_side;
 }
