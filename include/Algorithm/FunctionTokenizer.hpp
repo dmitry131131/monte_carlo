@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-// TODO Fix Tokenizer to throw exception if invalid token
 class Token final {
 public:
     enum class Symbol : unsigned char {

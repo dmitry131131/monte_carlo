@@ -30,12 +30,7 @@ class AppConfig final {
     // Algorithm settings
     Algorithm::Settings settings_ = {DEFAULT_CORE_USAGE, DEFAULT_POINT_COUNT};
     // Function settings
-    // TODO change to Function::Settings
-    struct FunctionInfo {
-        std::string text_;
-        double start_;
-        double end_;
-    } functionInfo_;
+    Function::Settings functionInfo_;
 
     /// Dumper settings
     struct DumperInfo final {
