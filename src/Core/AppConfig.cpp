@@ -24,8 +24,11 @@ AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), arg
                       ->default_val(DEFAULT_CORE_USAGE);
     algorithm_settings->add_option("-p,--point-count", settings_.point_count_, "Set count amount of integration points")
                       ->default_val(DEFAULT_POINT_COUNT);
-    algorithm_settings->add_option("-s,--start-limits", function_.start_, "Set start integration limits")->default_val(0);
-    algorithm_settings->add_option("-e,--end-limits", function_.end_, "Set end integration limits")->default_val(1);
+
+    auto function_settings = app_.add_option_group("Function", "Function settings");
+    function_settings->add_option("-f,--function", functionInfo_.text_, "Set integrated function")->default_val("x");
+    function_settings->add_option("-s,--start-limits", functionInfo_.start_, "Set start integration limits")->default_val(0);
+    function_settings->add_option("-e,--end-limits", functionInfo_.end_, "Set end integration limits")->default_val(1);
 
     // Machine settings
     auto machine_options = app_.add_option_group("Machine", "Machine settings");
@@ -69,11 +72,9 @@ int AppConfig::parse_command_line() {
         ERROR_MSG("[WARNING] Point count must be more then core usage, so set to " << settings_.point_count_ << " - default value\n");
     }
 
-    if (function_.start_ >= function_.end_) {
+    if (functionInfo_.start_ >= functionInfo_.end_) {
         GENERAL_ERROR("[ERROR] first integration limit must be less then second limit");
     }
-
-    VERBOSE_MSG(std::cout, "Function: \n" << function_ << "\nAlgorithm settings: \n" << settings_ << "\n\n");
 
     return 0;
 }
@@ -85,7 +86,7 @@ Machine AppConfig::machine_configure() {
 }
 
 Algorithm AppConfig::algorithm_configure(const Machine& machine) {
-    return Algorithm{machine, function_, settings_};
+    return Algorithm{machine, Function{functionInfo_.text_, functionInfo_.start_, functionInfo_.end_}, settings_};
 }
 
 std::unique_ptr<Dumper> AppConfig::dumper_configure() {

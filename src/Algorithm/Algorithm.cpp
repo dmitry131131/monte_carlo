@@ -21,7 +21,7 @@ Algorithm::Algorithm(const Machine& machine,
                                                  function_(func) {}
 
 namespace {
-void integrate(const std::function<double(double)>& func, double start, 
+void integrate(const Function& func, double start, 
                double end, unsigned count_points, double& result, std::mutex& mutex) {
     std::mt19937 engine(RANDOM_SEED);
     const double multi_const = (end - start) / static_cast<double>(engine.max());
@@ -44,14 +44,14 @@ Algorithm::Result Algorithm::launch() {
     double result = 0;
     std::mutex mutex;
 
-    Result result_conclusion{machine_, settings_, function_};
+    Result result_conclusion{machine_, settings_, function_.get_settings()};
 
-    double step = (function_.end_ - function_.start_) / static_cast<double>(settings_.core_usage_);
-    double current_start = function_.start_;
+    double step = (function_.get_end() - function_.get_start()) / static_cast<double>(settings_.core_usage_);
+    double current_start = function_.get_start();
     unsigned points_per_frame = static_cast<unsigned>(settings_.point_count_ / settings_.core_usage_);
 
     for (size_t i = 0; i < settings_.core_usage_; i++) {
-        thread_vector.emplace_back(integrate, function_.func_, current_start, current_start + step,
+        thread_vector.emplace_back(integrate, function_, current_start, current_start + step,
                                    points_per_frame, std::ref(result), std::ref(mutex));
         current_start += step;
     }
@@ -65,8 +65,8 @@ Algorithm::Result Algorithm::launch() {
     return result_conclusion; 
 }
 
-Algorithm::Result::Result(const Machine& machine, const Settings& settings, const Function function) :
-               machine_(machine), settings_(settings), function_(function) {
+Algorithm::Result::Result(const Machine& machine, const Settings& settings, Function::Settings function_settings) :
+               machine_(machine), settings_(settings), function_settings_(function_settings) {
     start_ = std::chrono::steady_clock::now();
 }
 
@@ -92,13 +92,6 @@ std::optional<std::chrono::duration<double>> Algorithm::Result::get_duration() c
     }
 
     return std::nullopt;
-}
-
-std::ostream& operator<< (std::ostream& os, const Function& func) {
-    os << "Start limit: " << func.start_ << '\n';
-    os << "End limit: " << func.end_;
-
-    return os;
 }
 
 std::ostream& operator<< (std::ostream& os, const Algorithm::Settings& settings) {

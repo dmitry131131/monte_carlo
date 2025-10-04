@@ -12,8 +12,6 @@
     return -1;                      \
 }while(0)
 
-// TODO добавить возможность указания интегрируемой функции 1 переменной
-
 int main(int argc, char** argv) try {
     // Config app: scan command line, configure algorithm
     AppConfig app(argc, argv);
