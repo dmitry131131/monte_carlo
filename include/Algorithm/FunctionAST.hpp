@@ -1,3 +1,8 @@
+/*!
+    \file
+    \brief This file describe Function AST and AST parser
+*/
+
 #pragma once
 #include <vector>
 #include <memory>
@@ -5,7 +10,16 @@
 
 class FunctionNode {
 public:
+    enum class NodeType : unsigned char {
+        FunctionNode,
+        BinaryOperator,
+        UnaryOperator,
+        Number,
+        Variable
+    };
+
     virtual double calculate(double x) const = 0;
+    virtual NodeType get_type() const {return NodeType::FunctionNode;}
     virtual ~FunctionNode() = default;
 };
 
@@ -30,7 +44,8 @@ public:
     double calculate(double x) const override;
 
     // Getters
-    BinaryOperatorType get_type() {return type_;}
+    NodeType get_type() const override {return NodeType::BinaryOperator;}
+    BinaryOperatorType get_operator_type() {return type_;}
     const FunctionNode& left() const {return *left_;}
     const FunctionNode& right() const {return *right_;}
 };
@@ -49,7 +64,8 @@ public:
     double calculate(double x) const override;
 
     // Getters
-    UnaryOperatorType get_type() {return type_;}
+    NodeType get_type() const override {return NodeType::UnaryOperator;}
+    UnaryOperatorType get_operator_type() {return type_;}
     const FunctionNode& get_next() const {return *next_;}
 };
 
@@ -57,11 +73,15 @@ class Number final : public FunctionNode {
     double number_;
 public:
     Number(double number) : number_(number) {}
+
+    NodeType get_type() const override {return NodeType::Number;}
     double calculate(double x) const override {(void) x;  return number_;}
 };
 
 class Variable final : public FunctionNode {
 public:
+
+    NodeType get_type() const override {return NodeType::Variable;}
     double calculate(double x) const override {return x;}
 };
 

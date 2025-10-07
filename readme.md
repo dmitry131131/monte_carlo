@@ -45,3 +45,5 @@
 ```bash
     cd ./docs/latex && make
 ```
+
+// TODO write about graphviz and dump generation

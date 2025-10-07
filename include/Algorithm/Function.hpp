@@ -1,3 +1,7 @@
+/*!
+    \file
+    \brief This file describe Function used in Algorithm
+*/
 #pragma once
 #include <functional>
 #include <ostream>
@@ -8,6 +12,8 @@
 /*!
 	\brief Struct represents function in monte-carlo algorithm
 */
+// TODO Add middle and to Function. Optimize useless nodes
+// TODO Add function dumper (use graphviz)
 class Function final {
 public:
     struct Settings final {
