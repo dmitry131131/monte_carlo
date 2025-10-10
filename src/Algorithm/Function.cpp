@@ -12,6 +12,8 @@ Function::Function(const std::string& text, double start, double end) : settings
 
     auto first_token = tokens.cbegin();
     func_ = getExpr(tokens, first_token);
+
+    optimize();
 }
 
 std::ostream& operator<< (std::ostream& os, const Function& func) {

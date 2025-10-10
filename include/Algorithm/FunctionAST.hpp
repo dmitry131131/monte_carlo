@@ -47,7 +47,9 @@ public:
     NodeType get_type() const override {return NodeType::BinaryOperator;}
     BinaryOperatorType get_operator_type() const {return type_;}
     const FunctionNode& left() const {return *left_;}
+    void set_left(NodePtr&& left) {left_ = std::move(left);}
     const FunctionNode& right() const {return *right_;}
+    void set_right(NodePtr &&right) {right_ = std::move(right);}
 };
 
 class UnaryOperator final : public FunctionNode {
@@ -67,6 +69,7 @@ public:
     NodeType get_type() const override {return NodeType::UnaryOperator;}
     UnaryOperatorType get_operator_type() const {return type_;}
     const FunctionNode& get_next() const {return *next_;}
+    void set_next(NodePtr &&next) {next_ = std::move(next);}
 };
 
 class Number final : public FunctionNode {

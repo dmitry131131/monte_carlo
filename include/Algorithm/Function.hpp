@@ -12,7 +12,6 @@
 /*!
 	\brief Struct represents function in monte-carlo algorithm
 */
-// TODO Add middle and to Function. Optimize useless nodes
 class Function final {
 public:
     struct Settings final {
@@ -26,6 +25,8 @@ public:
 private:
     std::shared_ptr<FunctionNode> func_;    ///< function root node
     Settings settings_;                     ///< Function settings
+
+    bool optimize();
 public:
     Function(const std::string& text, double start, double end);
 
