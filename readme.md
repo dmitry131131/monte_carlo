@@ -46,4 +46,13 @@
     cd ./docs/latex && make
 ```
 
-// TODO write about graphviz and dump generation
+### Graphviz дамп оптимизированной функции
+
+Чтобы включить дамп оптимизированной функции подайте флаг `--dump-ast` и укажите имя `.dot` файла.
+Установите `graphviz` на свой компьютер
+
+После этого выполните команду:
+
+```bash
+    dot -Tpng ./filename.dot > img.png
+```
