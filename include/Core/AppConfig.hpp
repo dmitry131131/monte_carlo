@@ -31,6 +31,7 @@ class AppConfig final {
     Algorithm::Settings settings_ = {DEFAULT_CORE_USAGE, DEFAULT_POINT_COUNT};
     // Function settings
     Function::Settings functionInfo_;
+    std::string debug_dot_filename_;
 
     /// Dumper settings
     struct DumperInfo final {

@@ -13,7 +13,6 @@
 	\brief Struct represents function in monte-carlo algorithm
 */
 // TODO Add middle and to Function. Optimize useless nodes
-// TODO Add function dumper (use graphviz)
 class Function final {
 public:
     struct Settings final {
@@ -34,6 +33,7 @@ public:
 
     // Getters
     const Settings& get_settings() const {return settings_;}
+    const  std::shared_ptr<FunctionNode> get_root() const {return func_;}
     const std::string& get_text() const {return settings_.text_;}
     double get_start() const {return settings_.start_;}
     double get_end() const {return settings_.end_;}

@@ -45,7 +45,7 @@ public:
 
     // Getters
     NodeType get_type() const override {return NodeType::BinaryOperator;}
-    BinaryOperatorType get_operator_type() {return type_;}
+    BinaryOperatorType get_operator_type() const {return type_;}
     const FunctionNode& left() const {return *left_;}
     const FunctionNode& right() const {return *right_;}
 };
@@ -65,7 +65,7 @@ public:
 
     // Getters
     NodeType get_type() const override {return NodeType::UnaryOperator;}
-    UnaryOperatorType get_operator_type() {return type_;}
+    UnaryOperatorType get_operator_type() const {return type_;}
     const FunctionNode& get_next() const {return *next_;}
 };
 
@@ -75,6 +75,7 @@ public:
     Number(double number) : number_(number) {}
 
     NodeType get_type() const override {return NodeType::Number;}
+    double value() const {return number_;}
     double calculate(double x) const override {(void) x;  return number_;}
 };
 

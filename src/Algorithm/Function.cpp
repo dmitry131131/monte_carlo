@@ -4,7 +4,7 @@
 #include "Algorithm/FunctionTokenizer.hpp"
 #include "Algorithm/FunctionAST.hpp"
 
-#include "Algorithm/FunctionDumper.hpp"
+#include "Dumper/FunctionDumper.hpp"
 
 Function::Function(const std::string& text, double start, double end) : settings_({text, start, end}) {
     std::vector<Token> tokens;
@@ -12,9 +12,6 @@ Function::Function(const std::string& text, double start, double end) : settings
 
     auto first_token = tokens.cbegin();
     func_ = getExpr(tokens, first_token);
-
-    FunctionDumper dumper("function_dump.dot", func_.get());
-    dumper();
 }
 
 std::ostream& operator<< (std::ostream& os, const Function& func) {

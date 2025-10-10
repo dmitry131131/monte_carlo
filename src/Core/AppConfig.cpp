@@ -1,6 +1,8 @@
 #include "Core/AppConfig.hpp"
 #include "Core/Error.hpp"
 
+#include "Dumper/FunctionDumper.hpp"
+
 namespace opts {
     bool verbose = false;
 } // namespace opts
@@ -29,6 +31,7 @@ AppConfig::AppConfig(const int argc, const char* const* argv) : argc_(argc), arg
     function_settings->add_option("-f,--function", functionInfo_.text_, "Set integrated function")->default_val("x");
     function_settings->add_option("-s,--start-limits", functionInfo_.start_, "Set start integration limits")->default_val(0);
     function_settings->add_option("-e,--end-limits", functionInfo_.end_, "Set end integration limits")->default_val(1);
+    function_settings->add_option("--dump-ast", debug_dot_filename_, "Enable AST dumping after optimizations");
 
     // Machine settings
     auto machine_options = app_.add_option_group("Machine", "Machine settings");
@@ -86,7 +89,14 @@ Machine AppConfig::machine_configure() {
 }
 
 Algorithm AppConfig::algorithm_configure(const Machine& machine) {
-    return Algorithm{machine, Function{functionInfo_.text_, functionInfo_.start_, functionInfo_.end_}, settings_};
+    Algorithm alg{machine, Function{functionInfo_.text_, functionInfo_.start_, functionInfo_.end_}, settings_};
+
+    if (!debug_dot_filename_.empty()) {
+        FunctionDumper dumper{debug_dot_filename_, alg.get_function().get_root().get()};
+        dumper();
+    }
+
+    return alg;
 }
 
 std::unique_ptr<Dumper> AppConfig::dumper_configure() {

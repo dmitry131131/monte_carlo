@@ -2,8 +2,7 @@ set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Algorithm.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/Function.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/FunctionAST.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/FunctionTokenizer.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/FunctionOptimizer.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/FunctionDumper.cpp)
+            ${CMAKE_CURRENT_SOURCE_DIR}/FunctionOptimizer.cpp)
 
 target_sources(${TARGET} PRIVATE ${SOURCES})
 target_sources(${TEST_TARGET} PRIVATE ${SOURCES})

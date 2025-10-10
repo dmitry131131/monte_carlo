@@ -70,9 +70,7 @@ public:
     /// @return const machine reference
     const Machine& get_machine() const {return machine_;}
 
-    double calculate_function(double x) const {
-        return function_(x);
-    }
+    const Function& get_function() const {return function_;}
 
     /// @brief Launch Monte-Carlo algorithm
     Result launch();
