@@ -174,3 +174,27 @@ NodePtr getExpr(const std::vector<Token>& vector, std::vector<Token>::const_iter
 
     return left_side;
 }
+
+NodePtr copySubTree(const FunctionNode* node) {
+    switch (node->get_type())
+    {
+    case FunctionNode::NodeType::Number:
+        return std::make_unique<Number>(static_cast<const Number*>(node)->value());
+    case FunctionNode::NodeType::Variable:
+        return std::make_unique<Variable>();
+    
+    case FunctionNode::NodeType::UnaryOperator: {
+        const UnaryOperator *op = static_cast<const UnaryOperator*>(node);
+        return std::make_unique<UnaryOperator>(UnaryOperator(op->get_operator_type(), copySubTree(&op->get_next())));
+    }
+    
+    case FunctionNode::NodeType::BinaryOperator: {
+        const BinaryOperator *op = static_cast<const BinaryOperator*>(node);
+        return std::make_unique<BinaryOperator>(BinaryOperator(op->get_operator_type(), copySubTree(&op->left()), copySubTree(&op->right())));
+    }
+
+    default:
+        throw std::runtime_error("Invalid Function NodeType!");
+        break;
+    }
+}

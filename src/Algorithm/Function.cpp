@@ -16,6 +16,10 @@ Function::Function(const std::string& text, double start, double end) : settings
     optimize();
 }
 
+Function::Function(const Function& func) : settings_(func.settings_) {
+    func_ = copySubTree(func.func_.get());
+}
+
 std::ostream& operator<< (std::ostream& os, const Function& func) {
     os << func.get_settings();
 

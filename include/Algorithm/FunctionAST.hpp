@@ -90,3 +90,5 @@ public:
 };
 
 NodePtr getExpr(const std::vector<Token>& vector, std::vector<Token>::const_iterator& current);
+
+NodePtr copySubTree(const FunctionNode* node);

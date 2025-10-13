@@ -67,9 +67,9 @@ namespace {
         return false;
     }
     // TODO create const optimization using graph algorithms  
-    bool const_optimization(std::shared_ptr<FunctionNode>& root) {
+    bool const_optimization(NodePtr& root) {
         if (is_const(root.get())) {
-            root = std::make_shared<Number>(root->calculate(0));
+            root = std::make_unique<Number>(root->calculate(0));
             return true;
         }
 

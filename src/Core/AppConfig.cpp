@@ -92,11 +92,11 @@ Algorithm AppConfig::algorithm_configure(const Machine& machine) {
     Algorithm alg{machine, Function{functionInfo_.text_, functionInfo_.start_, functionInfo_.end_}, settings_};
 
     if (!debug_dot_filename_.empty()) {
-        FunctionDumper dumper{debug_dot_filename_, alg.get_function().get_root().get()};
+        FunctionDumper dumper{debug_dot_filename_, alg.get_function().get_root()};
         dumper();
     }
 
-    return alg;
+    return std::move(alg);
 }
 
 std::unique_ptr<Dumper> AppConfig::dumper_configure() {
